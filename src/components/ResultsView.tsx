@@ -1,17 +1,29 @@
-import { memo, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { Button, Paper, Stack, Typography } from '@mui/material'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../quizStore'
 import { ResultComparisonSlider } from './ResultComparisonSlider'
+import { useNavigate } from 'react-router-dom'
 
 const ResultsViewRaw = () => {
-  const questions = useStoreValue(quizStore, 'questions')
-  const answers = useStoreValue(quizStore, 'answers')
-  const revealRealValues = useStoreValue(quizStore, 'revealRealValues')
-  const totalQuestions = questions.length
+  const navigate = useNavigate()
+  const allQuestions = useStoreValue(quizStore, 'allQuestions')
+  const userAnswers = useStoreValue(quizStore, 'userAnswers')
+  const totalQuestions = allQuestions.length
   const [visibleRows, setVisibleRows] = useState(0)
   const [revealedRows, setRevealedRows] = useState(0)
+  const [startRevealReal, setStartRevealReal] = useState(false)
 
+  const handleRestartClick = useCallback(() => {
+    quizStore.set('startQuiz')
+    navigate('/form')
+  }, [navigate])
+  const handleHomeClick = useCallback(() => {
+    quizStore.set('startQuiz')
+    navigate('/')
+  }, [navigate])
+
+  // Gradually reveal the user's estimated results, one by one, with animation
   useEffect(() => {
     if (!totalQuestions) return
 
@@ -19,30 +31,31 @@ const ResultsViewRaw = () => {
     const intervalId = window.setInterval(() => {
       index += 1
       setVisibleRows(index)
-
+      // When all results are visible, trigger the real values reveal after a short pause
       if (index >= totalQuestions) {
         window.clearInterval(intervalId)
+        setTimeout(() => setStartRevealReal(true), 350) // short pause before real values
       }
     }, 85)
 
     return () => window.clearInterval(intervalId)
   }, [totalQuestions])
 
+  // After the user's results are revealed, gradually reveal the real values, also with animation
   useEffect(() => {
-    if (!revealRealValues || !totalQuestions) return
+    if (!startRevealReal || !totalQuestions) return
 
     let index = 0
     const intervalId = window.setInterval(() => {
       index += 1
       setRevealedRows(index)
-
       if (index >= totalQuestions) {
         window.clearInterval(intervalId)
       }
     }, 110)
 
     return () => window.clearInterval(intervalId)
-  }, [revealRealValues, totalQuestions])
+  }, [startRevealReal, totalQuestions])
 
   return (
     <Paper
@@ -50,41 +63,35 @@ const ResultsViewRaw = () => {
       sx={{ p: { xs: 2.25, sm: 3.5 }, width: 'min(980px, 94vw)' }}
     >
       <Stack spacing={3.25}>
-        <Typography variant='h4' component='h2' textAlign='center'>
+        <Typography variant="h4" component="h2" textAlign="center">
           Your perception compared to real data
         </Typography>
 
-        <Stack
-          direction='row'
-          spacing={2}
-          justifyContent='center'
-          flexWrap='wrap'
-        >
-          <Button
-            variant='contained'
-            color='secondary'
-            disabled={revealRealValues}
-            onClick={() => quizStore.set('revealResults')}
-          >
-            {revealRealValues ? 'Revealed' : 'Reveal'}
-          </Button>
-          <Button variant='outlined' onClick={() => quizStore.set('start')}>
-            Restart
-          </Button>
-        </Stack>
-
         <Stack spacing={3}>
-          {questions.map((question, index) => (
+          {allQuestions.map((question, index) => (
             <ResultComparisonSlider
               key={question.title}
               index={index}
               title={question.title}
-              estimate={answers[question.title] ?? 50}
+              estimate={userAnswers[index] ?? 0}
               actual={question.answer}
               visible={index < visibleRows}
-              reveal={revealRealValues && index < revealedRows}
+              reveal={index < revealedRows}
             />
           ))}
+        </Stack>
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="center"
+          flexWrap="wrap"
+        >
+          <Button variant="outlined" onClick={handleRestartClick}>
+            Restart
+          </Button>
+          <Button variant="outlined" onClick={handleHomeClick}>
+            Home
+          </Button>
         </Stack>
       </Stack>
     </Paper>

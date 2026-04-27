@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import {
   Box,
   Button,
@@ -15,10 +15,27 @@ import { useNavigate } from 'react-router-dom'
 const QuestionCardRaw = () => {
   const navigate = useNavigate()
   const currentQuestion = useStoreValue(quizStore, 'currentQuestion')
+  console.log('🚀 ##  ~ QuestionCardRaw ~ currentQuestion:', currentQuestion)
   const currentIndex = useStoreValue(quizStore, 'currentIndex')
   const totalQuestions = useStoreValue(quizStore, 'totalQuestions')
   const currentGuess = useStoreValue(quizStore, 'currentGuess')
   const isLastQuestion = useStoreValue(quizStore, 'isLastQuestion')
+
+  const handleClickNext = useCallback(() => {
+    if (isLastQuestion) {
+      quizStore.set('finishQuiz')
+      navigate('/results')
+      return
+    }
+    quizStore.set('nextQuestion')
+  }, [navigate, isLastQuestion])
+
+  const handleOnSliderChange = useCallback((_, value: number | number[]) => {
+    quizStore.set(
+      'updateCurrentAnswer',
+      Array.isArray(value) ? value[0] : value,
+    )
+  }, [])
 
   if (!currentQuestion) return null
 
@@ -43,41 +60,31 @@ const QuestionCardRaw = () => {
         }}
       >
         <Stack spacing={2.5}>
-          <Typography variant='overline' color='text.secondary'>
+          <Typography variant="overline" color="text.secondary">
             Question {currentIndex + 1} of {totalQuestions}
           </Typography>
 
-          <Typography variant='h5' component='h2'>
-            Question:
-          </Typography>
+          <Typography variant="body1">{currentQuestion.question}</Typography>
 
-          <Typography variant='body1'>{currentQuestion.question}</Typography>
-
-          <Box sx={{ px: 1 }}>
+          <Box sx={{ px: 1, mt: 2 }}>
             <Slider
               min={0}
               max={100}
               step={1}
               value={currentGuess}
-              valueLabelDisplay='on'
-              onChange={(_, value) =>
-                quizStore.set(
-                  'setCurrentGuess',
-                  Array.isArray(value) ? value[0] : value,
-                )
-              }
+              onChange={handleOnSliderChange}
             />
           </Box>
 
           <Stack
-            direction='row'
-            justifyContent='space-between'
-            alignItems='center'
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            <Typography color='text.secondary'>
+            <Typography color="text.secondary">
               Your answer: {currentGuess}
             </Typography>
-            <Button variant='contained' onClick={() => navigate('/results')}>
+            <Button variant="contained" onClick={handleClickNext}>
               {isLastQuestion ? 'Finish' : 'Next'}
             </Button>
           </Stack>

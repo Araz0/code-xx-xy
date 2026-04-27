@@ -120,7 +120,7 @@ export function normalizePrintData(data: unknown): PrintData {
         .map((value) => Number(value))
         .filter((value) => Number.isFinite(value))
         .map((value) => Math.max(0, Math.min(100, value)))
-      const correctAnswer = Number(line.correctAnswer) || 50
+      const correctAnswer = Number(line.correctAnswer) || 0
 
       return {
         line: index + 1,
@@ -130,7 +130,7 @@ export function normalizePrintData(data: unknown): PrintData {
     })
 
   while (lines.length < 13) {
-    lines.push({ line: lines.length + 1, correctAnswer: 50, points: [] })
+    lines.push({ line: lines.length + 1, correctAnswer: 0, points: [] })
   }
 
   return { lines }
