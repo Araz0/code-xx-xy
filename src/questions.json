@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "title": "Male doctors in medical-legal actions",
+      "question": "Out of 100 medical-legal actions, how many involve male doctors?",
+      "answer": 71.0
+    },
+    {
+      "title": "Women pilots in airplane crashes",
+      "question": "Out of 100 airplane crashes, how many are caused by women?",
+      "answer": 33.4
+    },
+    {
+      "title": "Male school dropouts",
+      "question": "Out of 100 school dropouts, how many are male?",
+      "answer": 59.5
+    },
+    {
+      "title": "Women suspects of serious crimes",
+      "question": "Out of 100 suspects of serious crimes, how many are women?",
+      "answer": 17.5
+    },
+    {
+      "title": "Male convicted criminals",
+      "question": "Out of 100 convicted criminals, how many are men?",
+      "answer": 84.0
+    },
+    {
+      "title": "Women-caused traffic accidents with injuries",
+      "question": "Out of 100 traffic accidents with injuries in Austria, how many are caused by women?",
+      "answer": 32.0
+    },
+    {
+      "title": "Male-caused fatal traffic accidents",
+      "question": "Out of 100 fatal traffic accidents, how many are caused by men?",
+      "answer": 77.5
+    }
+  ]
+}
