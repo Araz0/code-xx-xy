@@ -22,6 +22,9 @@ const ResultsViewRaw = () => {
     quizStore.set('startQuiz')
     navigate('/')
   }, [navigate])
+  const handlePrintClick = useCallback(() => {
+    navigate('/print-results')
+  }, [navigate])
 
   // Gradually reveal the user's estimated results, one by one, with animation
   useEffect(() => {
@@ -91,6 +94,9 @@ const ResultsViewRaw = () => {
           </Button>
           <Button variant="outlined" onClick={handleHomeClick}>
             Home
+          </Button>
+          <Button variant="outlined" onClick={handlePrintClick}>
+            Print
           </Button>
         </Stack>
       </Stack>

@@ -24,18 +24,21 @@ const QuestionCardRaw = () => {
   const handleClickNext = useCallback(() => {
     if (isLastQuestion) {
       quizStore.set('finishQuiz')
-      navigate('/results')
+      navigate('/print-results')
       return
     }
     quizStore.set('nextQuestion')
   }, [navigate, isLastQuestion])
 
-  const handleOnSliderChange = useCallback((_, value: number | number[]) => {
-    quizStore.set(
-      'updateCurrentAnswer',
-      Array.isArray(value) ? value[0] : value,
-    )
-  }, [])
+  const handleOnSliderChange = useCallback(
+    (_: Event, value: number | number[]) => {
+      quizStore.set(
+        'updateCurrentAnswer',
+        Array.isArray(value) ? value[0] : value,
+      )
+    },
+    [],
+  )
 
   if (!currentQuestion) return null
 
