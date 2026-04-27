@@ -1,15 +1,17 @@
-import { Home } from './Home'
-import { PrintPreviewPage } from './printing/PrintPreviewPage'
+import { Home, PrintPreviewPage, Form } from './pages'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/printing' element={<PrintPreviewPage />} />
-        <Route index path='/' element={<Home />} />
-      </Routes>
-    </BrowserRouter>
+    <div className='page-container'>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/printing' element={<PrintPreviewPage />} />
+          <Route index path='/' element={<Home />} />
+          <Route index path='/form' element={<Form />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   )
 }
 

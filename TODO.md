@@ -1,0 +1,1 @@
+- add actions in the store to handle form management and navigation like finish quiz or clear and restart and such.

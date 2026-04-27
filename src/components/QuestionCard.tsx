@@ -10,8 +10,10 @@ import {
 } from '@mui/material'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../quizStore'
+import { useNavigate } from 'react-router-dom'
 
 const QuestionCardRaw = () => {
+  const navigate = useNavigate()
   const currentQuestion = useStoreValue(quizStore, 'currentQuestion')
   const currentIndex = useStoreValue(quizStore, 'currentIndex')
   const totalQuestions = useStoreValue(quizStore, 'totalQuestions')
@@ -75,7 +77,7 @@ const QuestionCardRaw = () => {
             <Typography color='text.secondary'>
               Your answer: {currentGuess}
             </Typography>
-            <Button variant='contained' onClick={() => quizStore.set('next')}>
+            <Button variant='contained' onClick={() => navigate('/results')}>
               {isLastQuestion ? 'Finish' : 'Next'}
             </Button>
           </Stack>
