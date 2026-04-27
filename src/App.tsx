@@ -1,14 +1,16 @@
 import { Home } from './Home'
 import { PrintPreviewPage } from './printing/PrintPreviewPage'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function App() {
-  const path = window.location.pathname.replace(/\/$/, '') || '/'
-
-  if (path === '/printing') {
-    return <PrintPreviewPage />
-  }
-
-  return <Home />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/printing' element={<PrintPreviewPage />} />
+        <Route index path='/' element={<Home />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App
