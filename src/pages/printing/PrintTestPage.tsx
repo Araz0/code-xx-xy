@@ -1,21 +1,19 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useStoreValue } from 'zustand-x'
-import { quizStore } from '../../quizStore'
+import { useNavigate } from 'react-router-dom'
 import { DEFAULT_PRINT_CONFIG } from './config'
+import { demoPrintData } from './demoPrintData'
 import {
+  generateRandomData,
   getAdaptiveBarWidth,
   getBarColorForPoint,
   getPointBarClass,
+  normalizePrintData,
+  toPrettyJson,
 } from './printDataUtils'
-import { buildPrintDataFromResults } from './printResultsUtils'
+import type { PrintData } from './types'
 import './printResults.css'
-
-type LocationState = {
-  resultsSets?: number[][]
-}
 
 function applyPreviewCssVariables(config: typeof DEFAULT_PRINT_CONFIG) {
   return {
@@ -35,28 +33,37 @@ function applyPreviewCssVariables(config: typeof DEFAULT_PRINT_CONFIG) {
   } as CSSProperties
 }
 
-export function PrintResultsPage() {
+export function PrintTestPage() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const rawQuestions = useStoreValue(quizStore, 'rawQuestions')
-  const userAnswers = useStoreValue(quizStore, 'userAnswers')
-
-  const state = location.state as LocationState | null
-  const resultsSets = useMemo(() => {
-    if (state?.resultsSets && state.resultsSets.length > 0) {
-      return state.resultsSets
-    }
-
-    return [userAnswers]
-  }, [state, userAnswers])
-
-  const printData = useMemo(
-    () => buildPrintDataFromResults(rawQuestions, resultsSets),
-    [rawQuestions, resultsSets],
-  )
-
   const config = DEFAULT_PRINT_CONFIG
   const cssVariables = useMemo(() => applyPreviewCssVariables(config), [config])
+
+  const [jsonText, setJsonText] = useState(() => toPrettyJson(demoPrintData))
+  const [previewData, setPreviewData] = useState<PrintData>(() =>
+    normalizePrintData(demoPrintData),
+  )
+  const [error, setError] = useState('')
+
+  const renderFromJsonText = (nextJsonText: string) => {
+    try {
+      const parsed = JSON.parse(nextJsonText) as unknown
+      const normalized = normalizePrintData(parsed)
+      setPreviewData(normalized)
+      setError('')
+      return true
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown JSON error'
+      setError(`Invalid JSON: ${message}`)
+      return false
+    }
+  }
+
+  const loadData = (data: PrintData) => {
+    const normalized = normalizePrintData(data)
+    setPreviewData(normalized)
+    setJsonText(toPrettyJson(normalized))
+    setError('')
+  }
 
   const dynamicPrintStyle = `
     @media print {
@@ -68,20 +75,16 @@ export function PrintResultsPage() {
   `
 
   useEffect(() => {
-    const timerId = window.setTimeout(() => window.print(), 120)
-    return () => window.clearTimeout(timerId)
-  }, [printData])
+    const syncBeforePrint = () => {
+      renderFromJsonText(jsonText)
+    }
 
-  if (!rawQuestions.length) {
-    return (
-      <Stack spacing={2} alignItems="center" sx={{ py: 3 }}>
-        <Typography variant="h6">No results to print.</Typography>
-        <Button variant="outlined" onClick={() => navigate('/')}>
-          Back Home
-        </Button>
-      </Stack>
-    )
-  }
+    window.addEventListener('beforeprint', syncBeforePrint)
+
+    return () => {
+      window.removeEventListener('beforeprint', syncBeforePrint)
+    }
+  }, [jsonText])
 
   return (
     <Stack spacing={2.5} sx={{ py: 3 }} className="print-results-page">
@@ -93,11 +96,11 @@ export function PrintResultsPage() {
         className="print-page-topbar"
       >
         <Typography variant="h5" component="h1">
-          Print Results
+          Print Test
         </Typography>
         <Stack direction="row" spacing={1.5}>
           <Button variant="text" onClick={() => navigate('/results')}>
-            View Results
+            Results
           </Button>
           <Button variant="text" onClick={() => navigate('/')}>
             Home
@@ -105,12 +108,53 @@ export function PrintResultsPage() {
         </Stack>
       </Stack>
 
+      <section className="print-controls">
+        <Typography variant="body2" sx={{ mb: 1 }}>
+          Paste JSON in {`{"lines":[{"points":[0..100]}...]}`} format with 13
+          lines.
+        </Typography>
+
+        <textarea
+          value={jsonText}
+          onChange={(event) => setJsonText(event.target.value)}
+          aria-label="Print JSON input"
+        />
+
+        <div className="print-actions">
+          <Button variant="outlined" onClick={() => loadData(demoPrintData)}>
+            Load Demo Data
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => loadData(generateRandomData())}
+          >
+            Randomize Data
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              const ok = renderFromJsonText(jsonText)
+              if (ok) {
+                window.print()
+              }
+            }}
+          >
+            Print Page
+          </Button>
+          <Button variant="text" onClick={() => renderFromJsonText(jsonText)}>
+            Refresh Preview
+          </Button>
+        </div>
+
+        {error ? <div className="print-error">{error}</div> : null}
+      </section>
+
       <main
         className="print-page"
         style={cssVariables}
         aria-label="Printable chart preview"
       >
-        {printData.lines.map((lineData, lineIndex) => {
+        {previewData.lines.map((lineData, lineIndex) => {
           const effectiveBarWidth = getAdaptiveBarWidth(
             lineData.points.length,
             config,

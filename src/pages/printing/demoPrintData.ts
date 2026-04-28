@@ -1,13 +1,13 @@
 import type { PrintData } from './types'
 
-export const fakeUserData: PrintData = {
+export const demoPrintData: PrintData = {
   lines: [
     {
       line: 1,
       correctAnswer: 48,
       points: [
         4, 6, 7, 9, 10, 12, 19, 22, 23, 24, 25, 27, 39, 41, 43, 44, 67, 69, 70,
-        72, 88, 91, 94,32,
+        72, 88, 91, 94, 32,
       ],
     },
     {
