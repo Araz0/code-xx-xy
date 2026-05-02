@@ -11,24 +11,34 @@ import {
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../quizStore'
 import { useNavigate } from 'react-router-dom'
+import { useSupabase } from '../hooks/useSupabase'
 
 const QuestionCardRaw = () => {
   const navigate = useNavigate()
   const currentQuestion = useStoreValue(quizStore, 'currentQuestion')
-  console.log('🚀 ##  ~ QuestionCardRaw ~ currentQuestion:', currentQuestion)
   const currentIndex = useStoreValue(quizStore, 'currentIndex')
   const totalQuestions = useStoreValue(quizStore, 'totalQuestions')
   const currentGuess = useStoreValue(quizStore, 'currentGuess')
   const isLastQuestion = useStoreValue(quizStore, 'isLastQuestion')
+  const userAnswers = useStoreValue(quizStore, 'userAnswers')
+  const language = useStoreValue(quizStore, 'language')
+  const { submitQuizResults } = useSupabase()
 
-  const handleClickNext = useCallback(() => {
+  const handleClickNext = useCallback(async () => {
     if (isLastQuestion) {
       quizStore.set('finishQuiz')
-      navigate('/print-results')
+      const { error } = await submitQuizResults({
+        answers: userAnswers,
+        language,
+      })
+      if (error) {
+        console.error('Failed to submit quiz results', error)
+      }
+      navigate('/results', { state: { autoPrint: true } })
       return
     }
     quizStore.set('nextQuestion')
-  }, [navigate, isLastQuestion])
+  }, [isLastQuestion, language, navigate, submitQuizResults, userAnswers])
 
   const handleOnSliderChange = useCallback(
     (_: Event, value: number | number[]) => {

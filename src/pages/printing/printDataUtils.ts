@@ -97,7 +97,13 @@ export function generateRandomData(intensity?: number): PrintData {
     lines: Array.from({ length: 13 }, (_, index) => ({
       line: index + 1,
       correctAnswer: randomInt(20, 80),
-      points: buildRandomLine(index + randomInt(1, 999), safeIntensity),
+      historicalPoints: buildRandomLine(
+        index + randomInt(1, 999),
+        safeIntensity,
+      ),
+      userPoint: randomInt(0, 100),
+      // ADD THIS:
+      targetGender: randomChoice(['men', 'women'] as const),
     })),
   }
 }
@@ -115,22 +121,54 @@ export function normalizePrintData(data: unknown): PrintData {
   const lines = (data as { lines: Array<Partial<PrintLine>> }).lines
     .slice(0, 13)
     .map((line, index) => {
-      const points = Array.isArray(line.points) ? line.points : []
-      const validPoints = points
+      const legacyPoints = Array.isArray((line as { points?: unknown }).points)
+        ? (line as { points: unknown[] }).points
+        : []
+      const sourcePoints = Array.isArray(line.historicalPoints)
+        ? line.historicalPoints
+        : legacyPoints
+      const validPoints = sourcePoints
         .map((value) => Number(value))
         .filter((value) => Number.isFinite(value))
         .map((value) => Math.max(0, Math.min(100, value)))
       const correctAnswer = Number(line.correctAnswer) || 0
+      const userPoint = Number.isFinite(line.userPoint)
+        ? clampPoint(Number(line.userPoint))
+        : null
+      const targetGender =
+        line.targetGender === 'men' || line.targetGender === 'women'
+          ? line.targetGender
+          : undefined
+      const biasDiff = Number.isFinite(line.biasDiff)
+        ? Number(line.biasDiff)
+        : undefined
+      const biasDirection =
+        line.biasDirection === 'men' || line.biasDirection === 'women'
+          ? line.biasDirection
+          : undefined
 
       return {
         line: index + 1,
         correctAnswer: Math.max(0, Math.min(100, correctAnswer)),
-        points: validPoints,
+        historicalPoints: validPoints,
+        userPoint,
+        targetGender,
+        biasDiff,
+        biasDirection,
       }
     })
 
+  // ... inside normalizePrintData
   while (lines.length < 13) {
-    lines.push({ line: lines.length + 1, correctAnswer: 0, points: [] })
+    lines.push({
+      line: lines.length + 1,
+      correctAnswer: 0,
+      historicalPoints: [],
+      userPoint: null,
+      targetGender: 'men', // Provide a default
+      biasDiff: undefined,
+      biasDirection: undefined,
+    })
   }
 
   return { lines }
@@ -158,29 +196,88 @@ export function getPointBarClass(lineIndex: number, pointIndex: number) {
 export function getBarColorForPoint(
   point: number,
   correctAnswer: number,
+  biasDirection?: 'men' | 'women' | null,
   config = DEFAULT_PRINT_CONFIG,
 ) {
-  const palette = config.colorPalette
-  const stops = [
-    palette.orange.hex,
-    palette.pink.hex,
-    palette.grau.hex,
-    palette.gelb.hex,
-    palette.gruen.hex,
-  ]
+  if (!Array.isArray(config.lineColors) || config.lineColors.length < 2) {
+    return config.defaultLineColor || '#9f9f9f'
+  }
 
-  const diff = point - correctAnswer
-  if (Math.abs(diff) < 1) return config.correctAnswerColor
+  // Define our two extremes. Assuming index 0 is Blue (Men) and the last is Red (Women)
+  const colorMen = config.lineColors[0]
+  const colorWomen = config.lineColors[config.lineColors.length - 1]
 
-  const maxDiff = 35
-  const ratio = Math.max(-1, Math.min(1, diff / maxDiff))
-  const position = (ratio + 1) / 2
-  const segments = stops.length - 1
-  const scaled = position * segments
-  const idx = Math.min(segments - 1, Math.max(0, Math.floor(scaled)))
-  const t = scaled - idx
+  // Calculate how far the answer is from the correct answer
+  const errorMargin = Math.abs(point - correctAnswer)
 
-  return interpolateColor(stops[idx], stops[idx + 1], t)
+  // Normalize the distance. Cap at 60 so full solid colors are reached at a 60-point error margin.
+  // You can adjust '60' up or down to change how quickly it reaches a solid color.
+  const intensity = Math.max(0, Math.min(1, errorMargin / 60))
+
+  // 0.5 is exactly in between (a neutral purple).
+  // 0.0 is full Men (Blue), 1.0 is full Women (Red).
+  let targetRatio = 0.5
+
+  if (biasDirection === 'men') {
+    // Pull ratio down towards 0 (Blue) based on intensity
+    targetRatio = 0.5 - 0.5 * intensity
+  } else if (biasDirection === 'women') {
+    // Pull ratio up towards 1 (Red) based on intensity
+    targetRatio = 0.5 + 0.5 * intensity
+  }
+
+  return interpolateColor(colorMen, colorWomen, targetRatio)
+}
+
+export function applyBiasToPrintData(data: PrintData): PrintData {
+  let menBiasSum = 0
+  let biasCount = 0
+
+  const lines = data.lines.map((line) => {
+    const diff =
+      line.userPoint === null ? null : line.userPoint - line.correctAnswer
+    let biasDirection: 'men' | 'women' | null = null
+    let menSignedDiff = 0
+
+    if (diff !== null && diff !== 0 && line.targetGender) {
+      if (diff > 0) {
+        biasDirection = line.targetGender
+      } else {
+        biasDirection = line.targetGender === 'men' ? 'women' : 'men'
+      }
+
+      menSignedDiff = line.targetGender === 'men' ? diff : -diff
+      menBiasSum += menSignedDiff
+      biasCount += 1
+    }
+
+    return {
+      ...line,
+      biasDiff: diff,
+      biasDirection,
+    }
+  })
+
+  if (biasCount > 0) {
+    const score = menBiasSum / biasCount
+    const direction = score > 0 ? 'men' : score < 0 ? 'women' : null
+    const percent = Math.round(Math.min(100, Math.abs(score)))
+    return {
+      ...data,
+      lines,
+      biasSummary: {
+        direction,
+        percent,
+        score,
+        count: biasCount,
+      },
+    }
+  }
+
+  return {
+    ...data,
+    lines,
+  }
 }
 
 export function toPrettyJson(data: PrintData) {

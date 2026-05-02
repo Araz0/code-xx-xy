@@ -1,76 +1,40 @@
-import { useEffect, useMemo } from 'react'
-import type { CSSProperties } from 'react'
+import { useMemo } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../../quizStore'
-import { DEFAULT_PRINT_CONFIG } from './config'
-import {
-  getAdaptiveBarWidth,
-  getBarColorForPoint,
-  getPointBarClass,
-} from './printDataUtils'
-import { buildPrintDataFromResults } from './printResultsUtils'
+import { usePrinting } from '../../hooks/usePrinting'
+import { PrintChart } from '../../components/PrintChart'
 import './printResults.css'
-
-type LocationState = {
-  resultsSets?: number[][]
-}
-
-function applyPreviewCssVariables(config: typeof DEFAULT_PRINT_CONFIG) {
-  return {
-    '--page-bg': config.pageBackground,
-    '--line-border': config.lineBorderColor,
-    '--line-border-width': `${config.lineBorderWidth}px`,
-    '--screen-max-width': `${config.screenMaxWidth}px`,
-    '--print-page-padding': config.printPagePadding,
-    '--row-height': `${config.rowHeight}px`,
-    '--row-gap': `${config.rowGap}px`,
-    '--bar-width': `${config.barWidth}px`,
-    '--bar-top-offset': `${config.barTopOffset}px`,
-    '--scale-font-size': `${config.scaleFontSize}px`,
-    '--alt-a-color': config.altAColor,
-    '--alt-b-color': config.altBColor,
-    '--default-line-color': config.defaultLineColor,
-  } as CSSProperties
-}
 
 export function PrintResultsPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const rawQuestions = useStoreValue(quizStore, 'rawQuestions')
   const userAnswers = useStoreValue(quizStore, 'userAnswers')
+  const language = useStoreValue(quizStore, 'language')
 
-  const state = location.state as LocationState | null
+  const state = location.state as { resultsSets?: number[][] } | null
   const resultsSets = useMemo(() => {
     if (state?.resultsSets && state.resultsSets.length > 0) {
       return state.resultsSets
     }
-
     return [userAnswers]
   }, [state, userAnswers])
 
-  const printData = useMemo(
-    () => buildPrintDataFromResults(rawQuestions, resultsSets),
-    [rawQuestions, resultsSets],
-  )
+  const { config, cssVariables, dynamicPrintStyle, printData } = usePrinting({
+    questions: rawQuestions,
+    resultsSets,
+    autoPrint: true,
+  })
 
-  const config = DEFAULT_PRINT_CONFIG
-  const cssVariables = useMemo(() => applyPreviewCssVariables(config), [config])
-
-  const dynamicPrintStyle = `
-    @media print {
-      @page {
-        size: ${config.pageSize} ${config.pageOrientation};
-        margin: ${config.printMargin};
-      }
-    }
-  `
-
-  useEffect(() => {
-    const timerId = window.setTimeout(() => window.print(), 120)
-    return () => window.clearTimeout(timerId)
-  }, [printData])
+  const headerText =
+    language === 'de' ? config.headerTextDe : config.headerTextEn
+  const legendText = {
+    correct: language === 'de' ? 'Reale Daten' : 'Correct answer',
+    historical: language === 'de' ? 'Vorgaenger-Antworten' : 'Previous answers',
+    user: language === 'de' ? 'Deine Antwort' : 'Your answer',
+  }
 
   if (!rawQuestions.length) {
     return (
@@ -86,7 +50,6 @@ export function PrintResultsPage() {
   return (
     <Stack spacing={2.5} sx={{ py: 3 }} className="print-results-page">
       <style>{dynamicPrintStyle}</style>
-
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -104,66 +67,14 @@ export function PrintResultsPage() {
           </Button>
         </Stack>
       </Stack>
-
-      <main
-        className="print-page"
-        style={cssVariables}
-        aria-label="Printable chart preview"
-      >
-        {printData.lines.map((lineData, lineIndex) => {
-          const effectiveBarWidth = getAdaptiveBarWidth(
-            lineData.points.length,
-            config,
-          )
-          const halfBarWidth = effectiveBarWidth / 2
-
-          return (
-            <section
-              className="line-row"
-              key={lineData.line}
-              style={
-                {
-                  '--line-color':
-                    config.lineColors[lineIndex] || config.defaultLineColor,
-                } as CSSProperties
-              }
-            >
-              <div className="bars-layer">
-                {lineData.points.map((point, pointIndex) => {
-                  const barClass = getPointBarClass(lineIndex, pointIndex)
-                  const color =
-                    barClass.length > 0
-                      ? undefined
-                      : getBarColorForPoint(
-                          point,
-                          lineData.correctAnswer,
-                          config,
-                        )
-
-                  return (
-                    <div
-                      className={`point-bar ${barClass}`.trim()}
-                      key={`${lineData.line}-${pointIndex}-${point}`}
-                      style={{
-                        width: `${effectiveBarWidth}px`,
-                        left: `calc(${point}% - ${halfBarWidth}px)`,
-                        ...(color ? { backgroundColor: color } : {}),
-                      }}
-                    />
-                  )
-                })}
-
-                <div
-                  className="correct-answer-label"
-                  style={{ left: `calc(${lineData.correctAnswer}% - 12px)` }}
-                >
-                  {lineData.correctAnswer}
-                </div>
-              </div>
-            </section>
-          )
-        })}
-      </main>
+      <PrintChart
+        printData={printData}
+        config={config}
+        cssVariables={cssVariables}
+        headerText={headerText}
+        legendText={legendText}
+        language={language}
+      />
     </Stack>
   )
 }

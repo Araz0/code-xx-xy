@@ -1,11 +1,23 @@
+export type GenderLabel = 'men' | 'women'
+
 export type PrintLine = {
   line: number
   correctAnswer: number
-  points: number[]
+  historicalPoints: number[]
+  userPoint: number | null
+  targetGender?: GenderLabel
+  biasDiff?: number | null
+  biasDirection?: GenderLabel | null
 }
 
 export type PrintData = {
   lines: PrintLine[]
+  biasSummary?: {
+    direction: GenderLabel | null
+    percent: number
+    score: number
+    count: number
+  }
 }
 
 export type PrintColor = {
@@ -13,14 +25,6 @@ export type PrintColor = {
   rgb: string
   cmyk: string
   name: string
-}
-
-export type PrintColorPalette = {
-  orange: PrintColor
-  pink: PrintColor
-  grau: PrintColor
-  gelb: PrintColor
-  gruen: PrintColor
 }
 
 export type PrintConfig = {
@@ -39,10 +43,20 @@ export type PrintConfig = {
   maxBarWidth: number
   barTopOffset: number
   scaleFontSize: number
+  headerTextEn: string
+  headerTextDe: string
+  headerFontSize: number
+  lineNumberWidth: number
+  lineNumberFontSize: number
+  legendFontSize: number
+  historicalBarWidth: number
+  userBarWidth: number
+  correctBarWidth: number
+  historicalBarColor: string
+  correctBarColor: string
   altAColor: string
   altBColor: string
   defaultLineColor: string
   correctAnswerColor: string
   lineColors: string[]
-  colorPalette: PrintColorPalette
 }

@@ -5,98 +5,128 @@ export const demoPrintData: PrintData = {
     {
       line: 1,
       correctAnswer: 48,
-      points: [
+      targetGender: 'women',
+      historicalPoints: [
         4, 6, 7, 9, 10, 12, 19, 22, 23, 24, 25, 27, 39, 41, 43, 44, 67, 69, 70,
         72, 88, 91, 94, 32,
       ],
+      userPoint: 52,
     },
     {
       line: 2,
       correctAnswer: 52,
-      points: [
+      targetGender: 'men',
+      historicalPoints: [
         2, 5, 8, 11, 18, 20, 21, 29, 30, 31, 32, 34, 47, 49, 51, 53, 71, 73, 74,
         77, 90, 96,
       ],
+      userPoint: 44,
     },
     {
       line: 3,
       correctAnswer: 45,
-      points: [
+      targetGender: 'men',
+      historicalPoints: [
         7, 8, 10, 13, 15, 17, 35, 36, 37, 38, 40, 56, 58, 60, 61, 63, 79, 81,
         83, 92, 95,
       ],
+      userPoint: 39,
     },
     {
       line: 4,
       correctAnswer: 50,
-      points: [
+      targetGender: 'women',
+      historicalPoints: [
         6, 9, 12, 14, 20, 22, 24, 26, 28, 39, 40, 42, 43, 45, 59, 60, 62, 64,
         66, 82, 85, 87,
       ],
+      userPoint: 58,
     },
     {
       line: 5,
       correctAnswer: 55,
-      points: [
+      targetGender: 'men',
+      historicalPoints: [
         10, 12, 13, 16, 18, 30, 31, 33, 34, 46, 48, 50, 66, 68, 70, 81, 83, 84,
         86,
       ],
+      userPoint: 61,
     },
     {
       line: 6,
       correctAnswer: 60,
-      points: [
+      targetGender: 'women',
+      historicalPoints: [
         15, 17, 19, 22, 37, 38, 39, 41, 55, 57, 59, 61, 78, 80, 82, 95, 97,
       ],
+      userPoint: 49,
     },
     {
       line: 7,
       correctAnswer: 46,
-      points: [
+      targetGender: 'men',
+      historicalPoints: [
         8, 11, 14, 18, 21, 24, 33, 35, 37, 44, 45, 46, 47, 49, 62, 64, 65, 66,
         68, 84, 86, 88,
       ],
+      userPoint: 41,
     },
     {
       line: 8,
       correctAnswer: 54,
-      points: [
+      targetGender: 'men',
+      historicalPoints: [
         3, 9, 10, 12, 16, 32, 34, 36, 54, 55, 57, 59, 76, 78, 80, 92, 94, 97,
       ],
+      userPoint: 66,
     },
     {
       line: 9,
       correctAnswer: 49,
-      points: [
+      targetGender: 'women',
+      historicalPoints: [
         5, 7, 10, 13, 15, 19, 35, 36, 38, 39, 41, 57, 58, 60, 74, 75, 77, 79,
         91, 93, 96,
       ],
+      userPoint: 57,
     },
     {
       line: 10,
       correctAnswer: 58,
-      points: [
+      targetGender: 'men',
+      historicalPoints: [
         12, 14, 15, 17, 18, 20, 36, 37, 38, 40, 42, 56, 58, 59, 61, 80, 82, 84,
         97, 99,
       ],
+      userPoint: 62,
     },
     {
       line: 11,
       correctAnswer: 42,
-      points: [4, 6, 8, 23, 24, 26, 42, 43, 45, 61, 63, 65, 82, 84, 86, 98],
+      targetGender: 'women',
+      historicalPoints: [
+        4, 6, 8, 23, 24, 26, 42, 43, 45, 61, 63, 65, 82, 84, 86, 98,
+      ],
+      userPoint: 36,
     },
     {
       line: 12,
       correctAnswer: 53,
-      points: [11, 13, 15, 18, 33, 35, 36, 54, 56, 58, 75, 76, 78, 91, 94],
+      targetGender: 'men',
+      historicalPoints: [
+        11, 13, 15, 18, 33, 35, 36, 54, 56, 58, 75, 76, 78, 91, 94,
+      ],
+      userPoint: 46,
     },
     {
       line: 13,
       correctAnswer: 47,
-      points: [
+      targetGender: 'men',
+      historicalPoints: [
         6, 8, 10, 12, 25, 27, 29, 31, 45, 47, 48, 50, 66, 68, 69, 71, 88, 90,
         92,
       ],
+      userPoint: 55,
     },
   ],
 }

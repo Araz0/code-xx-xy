@@ -5,13 +5,12 @@ import { useNavigate } from 'react-router-dom'
 import { DEFAULT_PRINT_CONFIG } from './config'
 import { demoPrintData } from './demoPrintData'
 import {
+  applyBiasToPrintData,
   generateRandomData,
-  getAdaptiveBarWidth,
-  getBarColorForPoint,
-  getPointBarClass,
   normalizePrintData,
   toPrettyJson,
 } from './printDataUtils'
+import { PrintChart } from '../../components/PrintChart'
 import type { PrintData } from './types'
 import './printResults.css'
 
@@ -27,6 +26,15 @@ function applyPreviewCssVariables(config: typeof DEFAULT_PRINT_CONFIG) {
     '--bar-width': `${config.barWidth}px`,
     '--bar-top-offset': `${config.barTopOffset}px`,
     '--scale-font-size': `${config.scaleFontSize}px`,
+    '--print-header-font-size': `${config.headerFontSize}px`,
+    '--line-number-width': `${config.lineNumberWidth}px`,
+    '--line-number-font-size': `${config.lineNumberFontSize}px`,
+    '--legend-font-size': `${config.legendFontSize}px`,
+    '--historical-bar-width': `${config.historicalBarWidth}px`,
+    '--user-bar-width': `${config.userBarWidth}px`,
+    '--correct-bar-width': `${config.correctBarWidth}px`,
+    '--historical-bar-color': config.historicalBarColor,
+    '--correct-bar-color': config.correctBarColor,
     '--alt-a-color': config.altAColor,
     '--alt-b-color': config.altBColor,
     '--default-line-color': config.defaultLineColor,
@@ -40,14 +48,14 @@ export function PrintTestPage() {
 
   const [jsonText, setJsonText] = useState(() => toPrettyJson(demoPrintData))
   const [previewData, setPreviewData] = useState<PrintData>(() =>
-    normalizePrintData(demoPrintData),
+    applyBiasToPrintData(normalizePrintData(demoPrintData)),
   )
   const [error, setError] = useState('')
 
   const renderFromJsonText = (nextJsonText: string) => {
     try {
       const parsed = JSON.parse(nextJsonText) as unknown
-      const normalized = normalizePrintData(parsed)
+      const normalized = applyBiasToPrintData(normalizePrintData(parsed))
       setPreviewData(normalized)
       setError('')
       return true
@@ -59,7 +67,7 @@ export function PrintTestPage() {
   }
 
   const loadData = (data: PrintData) => {
-    const normalized = normalizePrintData(data)
+    const normalized = applyBiasToPrintData(normalizePrintData(data))
     setPreviewData(normalized)
     setJsonText(toPrettyJson(normalized))
     setError('')
@@ -149,65 +157,18 @@ export function PrintTestPage() {
         {error ? <div className="print-error">{error}</div> : null}
       </section>
 
-      <main
-        className="print-page"
-        style={cssVariables}
-        aria-label="Printable chart preview"
-      >
-        {previewData.lines.map((lineData, lineIndex) => {
-          const effectiveBarWidth = getAdaptiveBarWidth(
-            lineData.points.length,
-            config,
-          )
-          const halfBarWidth = effectiveBarWidth / 2
-
-          return (
-            <section
-              className="line-row"
-              key={lineData.line}
-              style={
-                {
-                  '--line-color':
-                    config.lineColors[lineIndex] || config.defaultLineColor,
-                } as CSSProperties
-              }
-            >
-              <div className="bars-layer">
-                {lineData.points.map((point, pointIndex) => {
-                  const barClass = getPointBarClass(lineIndex, pointIndex)
-                  const color =
-                    barClass.length > 0
-                      ? undefined
-                      : getBarColorForPoint(
-                          point,
-                          lineData.correctAnswer,
-                          config,
-                        )
-
-                  return (
-                    <div
-                      className={`point-bar ${barClass}`.trim()}
-                      key={`${lineData.line}-${pointIndex}-${point}`}
-                      style={{
-                        width: `${effectiveBarWidth}px`,
-                        left: `calc(${point}% - ${halfBarWidth}px)`,
-                        ...(color ? { backgroundColor: color } : {}),
-                      }}
-                    />
-                  )
-                })}
-
-                <div
-                  className="correct-answer-label"
-                  style={{ left: `calc(${lineData.correctAnswer}% - 12px)` }}
-                >
-                  {lineData.correctAnswer}
-                </div>
-              </div>
-            </section>
-          )
-        })}
-      </main>
+      <PrintChart
+        printData={previewData}
+        config={config}
+        cssVariables={cssVariables}
+        headerText={config.headerTextEn}
+        legendText={{
+          correct: 'Correct answer',
+          historical: 'Previous answers',
+          user: 'Your answer',
+        }}
+        language="en"
+      />
     </Stack>
   )
 }
