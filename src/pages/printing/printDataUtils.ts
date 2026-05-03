@@ -1,5 +1,4 @@
-import { DEFAULT_PRINT_CONFIG } from './config'
-import type { PrintConfig, PrintData, PrintLine } from './types'
+import type { GenderLabel, PrintData, PrintLine } from './types'
 
 function clampPoint(value: number) {
   return Math.max(0, Math.min(100, Math.round(value)))
@@ -11,39 +10,6 @@ function randomInt(min: number, max: number) {
 
 function randomChoice<T>(values: T[]) {
   return values[randomInt(0, values.length - 1)]
-}
-
-function hexToRgb(hex: string) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return result
-    ? {
-        r: Number.parseInt(result[1], 16),
-        g: Number.parseInt(result[2], 16),
-        b: Number.parseInt(result[3], 16),
-      }
-    : { r: 128, g: 128, b: 128 }
-}
-
-function rgbToHex(r: number, g: number, b: number) {
-  return (
-    '#' +
-    [r, g, b]
-      .map((x) => {
-        const hex = x.toString(16)
-        return hex.length === 1 ? `0${hex}` : hex
-      })
-      .join('')
-  )
-}
-
-function interpolateColor(color1: string, color2: string, ratio: number) {
-  const safeRatio = Math.max(0, Math.min(1, ratio))
-  const rgb1 = hexToRgb(color1)
-  const rgb2 = hexToRgb(color2)
-  const r = Math.round(rgb1.r + (rgb2.r - rgb1.r) * safeRatio)
-  const g = Math.round(rgb1.g + (rgb2.g - rgb1.g) * safeRatio)
-  const b = Math.round(rgb1.b + (rgb2.b - rgb1.b) * safeRatio)
-  return rgbToHex(r, g, b)
 }
 
 function buildRandomLine(seed: number, intensity = 1) {
@@ -102,7 +68,6 @@ export function generateRandomData(intensity?: number): PrintData {
         safeIntensity,
       ),
       userPoint: randomInt(0, 100),
-      // ADD THIS:
       targetGender: randomChoice(['men', 'women'] as const),
     })),
   }
@@ -158,14 +123,13 @@ export function normalizePrintData(data: unknown): PrintData {
       }
     })
 
-  // ... inside normalizePrintData
   while (lines.length < 13) {
     lines.push({
       line: lines.length + 1,
       correctAnswer: 0,
       historicalPoints: [],
       userPoint: null,
-      targetGender: 'men', // Provide a default
+      targetGender: 'men',
       biasDiff: undefined,
       biasDirection: undefined,
     })
@@ -174,82 +138,62 @@ export function normalizePrintData(data: unknown): PrintData {
   return { lines }
 }
 
-export function getAdaptiveBarWidth(pointCount: number, config: PrintConfig) {
-  const minWidth = Math.max(1, Number(config.minBarWidth) || 1)
-  const maxWidth = Math.max(
-    minWidth,
-    Number(config.maxBarWidth) || config.barWidth || 5,
-  )
-  const density = Math.max(0, Math.min(1, (pointCount - 10) / 50))
-  return Math.max(
-    minWidth,
-    Math.min(maxWidth, maxWidth - density * (maxWidth - minWidth)),
-  )
-}
+type BiasSummary = NonNullable<PrintData['biasSummary']>
 
-export function getPointBarClass(lineIndex: number, pointIndex: number) {
-  if ((lineIndex + pointIndex) % 17 === 0) return 'alt-b'
-  if ((lineIndex + pointIndex) % 9 === 0) return 'alt-a'
-  return ''
-}
-
-export function getBarColorForPoint(
-  point: number,
-  correctAnswer: number,
-  biasDirection?: 'men' | 'women' | null,
-  config = DEFAULT_PRINT_CONFIG,
-) {
-  if (!Array.isArray(config.lineColors) || config.lineColors.length < 2) {
-    return config.defaultLineColor || '#9f9f9f'
+function summarizeBias(menBiasSum: number, biasCount: number) {
+  if (biasCount <= 0) return undefined
+  const score = menBiasSum / biasCount
+  const direction: GenderLabel | null =
+    score > 0 ? 'men' : score < 0 ? 'women' : null
+  const percent = Math.round(Math.min(100, Math.abs(score)))
+  return {
+    direction,
+    percent,
+    score,
+    count: biasCount,
   }
-
-  // Define our two extremes. Assuming index 0 is Blue (Men) and the last is Red (Women)
-  const colorMen = config.lineColors[0]
-  const colorWomen = config.lineColors[config.lineColors.length - 1]
-
-  // Calculate how far the answer is from the correct answer
-  const errorMargin = Math.abs(point - correctAnswer)
-
-  // Normalize the distance. Cap at 60 so full solid colors are reached at a 60-point error margin.
-  // You can adjust '60' up or down to change how quickly it reaches a solid color.
-  const intensity = Math.max(0, Math.min(1, errorMargin / 60))
-
-  // 0.5 is exactly in between (a neutral purple).
-  // 0.0 is full Men (Blue), 1.0 is full Women (Red).
-  let targetRatio = 0.5
-
-  if (biasDirection === 'men') {
-    // Pull ratio down towards 0 (Blue) based on intensity
-    targetRatio = 0.5 - 0.5 * intensity
-  } else if (biasDirection === 'women') {
-    // Pull ratio up towards 1 (Red) based on intensity
-    targetRatio = 0.5 + 0.5 * intensity
-  }
-
-  return interpolateColor(colorMen, colorWomen, targetRatio)
 }
 
-export function applyBiasToPrintData(data: PrintData): PrintData {
+function getMenSignedDiff(diff: number, targetGender: GenderLabel) {
+  return targetGender === 'men' ? diff : -diff
+}
+
+export function calculateBiasSummary(
+  lines: PrintLine[],
+  getPoints: (line: PrintLine) => Array<number | null | undefined>,
+): BiasSummary | undefined {
   let menBiasSum = 0
   let biasCount = 0
 
+  lines.forEach((line) => {
+    if (!line.targetGender) return
+    const points = getPoints(line)
+      .map((value) => (Number.isFinite(value) ? Number(value) : null))
+      .filter((value): value is number => value !== null)
+
+    points.forEach((point) => {
+      const diff = point - line.correctAnswer
+      menBiasSum += getMenSignedDiff(diff, line.targetGender)
+      biasCount += 1
+    })
+  })
+
+  return summarizeBias(menBiasSum, biasCount)
+}
+
+function getBiasDirectionFromDiff(
+  diff: number | null,
+  targetGender?: GenderLabel,
+) {
+  if (!targetGender || diff === null || diff === 0) return null
+  return diff > 0 ? targetGender : targetGender === 'men' ? 'women' : 'men'
+}
+
+export function applyBiasToPrintData(data: PrintData): PrintData {
   const lines = data.lines.map((line) => {
     const diff =
       line.userPoint === null ? null : line.userPoint - line.correctAnswer
-    let biasDirection: 'men' | 'women' | null = null
-    let menSignedDiff = 0
-
-    if (diff !== null && diff !== 0 && line.targetGender) {
-      if (diff > 0) {
-        biasDirection = line.targetGender
-      } else {
-        biasDirection = line.targetGender === 'men' ? 'women' : 'men'
-      }
-
-      menSignedDiff = line.targetGender === 'men' ? diff : -diff
-      menBiasSum += menSignedDiff
-      biasCount += 1
-    }
+    const biasDirection = getBiasDirectionFromDiff(diff, line.targetGender)
 
     return {
       ...line,
@@ -258,25 +202,29 @@ export function applyBiasToPrintData(data: PrintData): PrintData {
     }
   })
 
-  if (biasCount > 0) {
-    const score = menBiasSum / biasCount
-    const direction = score > 0 ? 'men' : score < 0 ? 'women' : null
-    const percent = Math.round(Math.min(100, Math.abs(score)))
-    return {
-      ...data,
-      lines,
-      biasSummary: {
-        direction,
-        percent,
-        score,
-        count: biasCount,
-      },
-    }
-  }
+  const biasSummary = calculateBiasSummary(lines, (line) => [line.userPoint])
+  const historicalBiasSummary = calculateBiasSummary(
+    lines,
+    (line) => line.historicalPoints,
+  )
+  const historicalSetCount = lines.reduce(
+    (maxCount, line) => Math.max(maxCount, line.historicalPoints.length),
+    0,
+  )
+  const historicalBiasBySet = Array.from(
+    { length: historicalSetCount },
+    (_, setIndex) =>
+      calculateBiasSummary(lines, (line) => [line.historicalPoints[setIndex]]),
+  ).filter((summary): summary is NonNullable<typeof summary> =>
+    Boolean(summary),
+  )
 
   return {
     ...data,
     lines,
+    ...(biasSummary ? { biasSummary } : {}),
+    ...(historicalBiasSummary ? { historicalBiasSummary } : {}),
+    ...(historicalBiasBySet.length ? { historicalBiasBySet } : {}),
   }
 }
 

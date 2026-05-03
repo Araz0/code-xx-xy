@@ -18,6 +18,18 @@ export type PrintData = {
     score: number
     count: number
   }
+  historicalBiasSummary?: {
+    direction: GenderLabel | null
+    percent: number
+    score: number
+    count: number
+  }
+  historicalBiasBySet?: Array<{
+    direction: GenderLabel | null
+    percent: number
+    score: number
+    count: number
+  }>
 }
 
 export type PrintColor = {
@@ -38,10 +50,6 @@ export type PrintConfig = {
   printPagePadding: string
   rowHeight: number
   rowGap: number
-  barWidth: number
-  minBarWidth: number
-  maxBarWidth: number
-  barTopOffset: number
   scaleFontSize: number
   headerTextEn: string
   headerTextDe: string
@@ -49,14 +57,8 @@ export type PrintConfig = {
   lineNumberWidth: number
   lineNumberFontSize: number
   legendFontSize: number
-  historicalBarWidth: number
-  userBarWidth: number
-  correctBarWidth: number
-  historicalBarColor: string
-  correctBarColor: string
-  altAColor: string
-  altBColor: string
-  defaultLineColor: string
-  correctAnswerColor: string
-  lineColors: string[]
+  pointColor: string
+  historicalPointSize: number
+  correctPointSize: number
+  userPointSize: number
 }

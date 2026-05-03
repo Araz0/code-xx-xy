@@ -183,7 +183,6 @@ const ResultsViewRaw = () => {
       <div className="print-results-page print-only">
         <PrintChart
           printData={printData}
-          config={config}
           cssVariables={cssVariables}
           headerText={headerText}
           legendText={legendText}

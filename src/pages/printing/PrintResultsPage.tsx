@@ -69,7 +69,6 @@ export function PrintResultsPage() {
       </Stack>
       <PrintChart
         printData={printData}
-        config={config}
         cssVariables={cssVariables}
         headerText={headerText}
         legendText={legendText}

@@ -1,6 +1,6 @@
 import type { GenderLabel, PrintData } from './types'
-import { normalizePrintData } from './printDataUtils'
 import type { RawQuestion } from '../../quizStore'
+import { calculateBiasSummary, normalizePrintData } from './printDataUtils'
 
 type ResultSet = number[]
 
@@ -24,9 +24,6 @@ export function buildPrintDataFromResults(
     return 'men'
   }
 
-  let menBiasSum = 0
-  let biasCount = 0
-
   const lines = questions.map((question, index) => {
     const points = safeResults
       .map((set) => set[index])
@@ -39,16 +36,9 @@ export function buildPrintDataFromResults(
     const diff = userPoint === null ? null : userPoint - question.answer
 
     let biasDirection: GenderLabel | null = null
-    let menSignedDiff = 0
     if (diff !== null && diff !== 0) {
-      if (diff > 0) {
-        biasDirection = targetGender
-      } else {
-        biasDirection = targetGender === 'men' ? 'women' : 'men'
-      }
-      menSignedDiff = targetGender === 'men' ? diff : -diff
-      menBiasSum += menSignedDiff
-      biasCount += 1
+      biasDirection =
+        diff > 0 ? targetGender : targetGender === 'men' ? 'women' : 'men'
     }
 
     return {
@@ -63,23 +53,31 @@ export function buildPrintDataFromResults(
   })
 
   const normalized = normalizePrintData({ lines })
+  const biasSummary = calculateBiasSummary(normalized.lines, (line) => [
+    line.userPoint,
+  ])
+  const historicalBiasSummary = calculateBiasSummary(
+    normalized.lines,
+    (line) => line.historicalPoints,
+  )
+  const historicalSetCount = normalized.lines.reduce(
+    (maxCount, line) => Math.max(maxCount, line.historicalPoints.length),
+    0,
+  )
+  const historicalBiasBySet = Array.from(
+    { length: historicalSetCount },
+    (_, setIndex) =>
+      calculateBiasSummary(normalized.lines, (line) => [
+        line.historicalPoints[setIndex],
+      ]),
+  ).filter((summary): summary is NonNullable<typeof summary> =>
+    Boolean(summary),
+  )
 
-  if (biasCount > 0) {
-    const score = menBiasSum / biasCount
-    const direction: GenderLabel | null =
-      score > 0 ? 'men' : score < 0 ? 'women' : null
-    const percent = Math.round(Math.min(100, Math.abs(score)))
-
-    return {
-      ...normalized,
-      biasSummary: {
-        direction,
-        percent,
-        score,
-        count: biasCount,
-      },
-    }
+  return {
+    ...normalized,
+    ...(biasSummary ? { biasSummary } : {}),
+    ...(historicalBiasSummary ? { historicalBiasSummary } : {}),
+    ...(historicalBiasBySet.length ? { historicalBiasBySet } : {}),
   }
-
-  return normalized
 }

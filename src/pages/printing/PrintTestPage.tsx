@@ -4,15 +4,16 @@ import { Button, Stack, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { DEFAULT_PRINT_CONFIG } from './config'
 import { demoPrintData } from './demoPrintData'
-import {
-  applyBiasToPrintData,
-  generateRandomData,
-  normalizePrintData,
-  toPrettyJson,
-} from './printDataUtils'
+
 import { PrintChart } from '../../components/PrintChart'
 import type { PrintData } from './types'
 import './printResults.css'
+import {
+  toPrettyJson,
+  applyBiasToPrintData,
+  normalizePrintData,
+  generateRandomData,
+} from './printDataUtils'
 
 function applyPreviewCssVariables(config: typeof DEFAULT_PRINT_CONFIG) {
   return {
@@ -23,21 +24,15 @@ function applyPreviewCssVariables(config: typeof DEFAULT_PRINT_CONFIG) {
     '--print-page-padding': config.printPagePadding,
     '--row-height': `${config.rowHeight}px`,
     '--row-gap': `${config.rowGap}px`,
-    '--bar-width': `${config.barWidth}px`,
-    '--bar-top-offset': `${config.barTopOffset}px`,
     '--scale-font-size': `${config.scaleFontSize}px`,
     '--print-header-font-size': `${config.headerFontSize}px`,
     '--line-number-width': `${config.lineNumberWidth}px`,
     '--line-number-font-size': `${config.lineNumberFontSize}px`,
     '--legend-font-size': `${config.legendFontSize}px`,
-    '--historical-bar-width': `${config.historicalBarWidth}px`,
-    '--user-bar-width': `${config.userBarWidth}px`,
-    '--correct-bar-width': `${config.correctBarWidth}px`,
-    '--historical-bar-color': config.historicalBarColor,
-    '--correct-bar-color': config.correctBarColor,
-    '--alt-a-color': config.altAColor,
-    '--alt-b-color': config.altBColor,
-    '--default-line-color': config.defaultLineColor,
+    '--point-color': config.pointColor,
+    '--historical-point-size': `${config.historicalPointSize}px`,
+    '--correct-point-size': `${config.correctPointSize}px`,
+    '--user-point-size': `${config.userPointSize}px`,
   } as CSSProperties
 }
 
@@ -159,7 +154,6 @@ export function PrintTestPage() {
 
       <PrintChart
         printData={previewData}
-        config={config}
         cssVariables={cssVariables}
         headerText={config.headerTextEn}
         legendText={{

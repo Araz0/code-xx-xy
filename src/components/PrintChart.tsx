@@ -1,14 +1,8 @@
 import type { CSSProperties } from 'react'
-import type {
-  GenderLabel,
-  PrintData,
-  PrintConfig,
-} from '../pages/printing/types'
-import { getBarColorForPoint } from '../pages/printing/printDataUtils'
+import type { GenderLabel, PrintData } from '../pages/printing/types'
 
 export interface PrintChartProps {
   printData: PrintData
-  config: PrintConfig
   cssVariables: CSSProperties
   headerText: string
   legendText: { correct: string; historical: string; user: string }
@@ -17,19 +11,17 @@ export interface PrintChartProps {
 
 export function PrintChart({
   printData,
-  config,
   cssVariables,
   headerText,
   legendText,
   language = 'en',
 }: PrintChartProps) {
   const summary = printData.biasSummary
+  const historicalBiasBySet = printData.historicalBiasBySet ?? []
   const biasText = summary
     ? buildBiasText(summary.direction, summary.percent, language)
     : null
-  const biasMarkerLeft = summary
-    ? Math.max(0, Math.min(100, 50 + summary.score / 2))
-    : 50
+  const biasMarkerLeft = summary ? getBiasMarkerLeft(summary.score) : 50
 
   return (
     <main
@@ -40,48 +32,36 @@ export function PrintChart({
       <header className="print-header">
         <h1>{headerText}</h1>
       </header>
-      {printData.lines.map((lineData, lineIndex) => {
-        const userColor = getUserBarColor(lineData, config)
-
+      {printData.lines.map((lineData) => {
         return (
-          <section
-            className="line-row"
-            key={lineData.line}
-            style={
-              {
-                '--line-color':
-                  config.lineColors[lineIndex] || config.defaultLineColor,
-              } as CSSProperties
-            }
-          >
+          <section className="line-row" key={lineData.line}>
             <div className="line-number">{lineData.line}</div>
             <div className="line-bars">
               <div className="bars-layer">
                 {lineData.historicalPoints.map(
                   (point: number, pointIndex: number) => (
                     <div
-                      className="point-bar historical-bar"
+                      className="point-dot historical-dot"
                       key={`${lineData.line}-${pointIndex}-${point}`}
                       style={{
-                        left: `calc(${point}% - (var(--historical-bar-width) / 2))`,
+                        left: `${point}%`,
                       }}
                     />
                   ),
                 )}
 
                 <div
-                  className="point-bar correct-answer-bar"
+                  className="point-dot correct-dot"
                   style={{
-                    left: `calc(${lineData.correctAnswer}% - (var(--correct-bar-width) / 2))`,
+                    left: `${lineData.correctAnswer}%`,
                   }}
                 />
 
                 {lineData.userPoint !== null ? (
                   <div
-                    className="point-bar user-bar"
+                    className="point-dot user-dot"
                     style={{
-                      left: `calc(${lineData.userPoint}% - (var(--user-bar-width) / 2))`,
-                      ...(userColor ? { backgroundColor: userColor } : {}),
+                      left: `${lineData.userPoint}%`,
                     }}
                   />
                 ) : null}
@@ -92,26 +72,31 @@ export function PrintChart({
       })}
       <div className="print-legend" role="list">
         <div className="legend-item" role="listitem">
-          <span className="legend-line correct" />
+          <span className="legend-dot legend-dot-correct" />
           <span>{legendText.correct}</span>
         </div>
         <div className="legend-item" role="listitem">
-          <span className="legend-line" />
+          <span className="legend-dot legend-dot-historical" />
           <span>{legendText.historical}</span>
         </div>
         <div className="legend-item" role="listitem">
-          <span
-            className="legend-swatch legend-block legend-gradient"
-            aria-label="User answer gradient"
-          />
+          <span className="legend-dot legend-dot-user" />
           <span>{legendText.user}</span>
         </div>
       </div>
       {summary && biasText ? (
         <div className="bias-summary">
-          <div className="bias-bar" aria-label="Total bias">
+          <div className="bias-scale" aria-label="Total bias">
+            <span className="bias-center-dot" style={{ left: '50%' }} />
+            {historicalBiasBySet.map((summaryItem, index) => (
+              <span
+                className="bias-marker-dot historical-bias-dot"
+                key={`historical-bias-${index}`}
+                style={{ left: `${getBiasMarkerLeft(summaryItem.score)}%` }}
+              />
+            ))}
             <span
-              className="bias-marker"
+              className="bias-marker-dot"
               style={{ left: `${biasMarkerLeft}%` }}
             />
           </div>
@@ -122,22 +107,8 @@ export function PrintChart({
   )
 }
 
-function getUserBarColor(
-  lineData: PrintData['lines'][number],
-  config: PrintConfig,
-) {
-  // If the user didn't answer, return nothing
-  if (lineData.userPoint === null) return undefined
-
-  // Let getBarColorForPoint handle the gradient based on the bias and distance
-  const barColor = getBarColorForPoint(
-    lineData.userPoint,
-    lineData.correctAnswer,
-    lineData.biasDirection,
-    config,
-  )
-
-  return barColor
+function getBiasMarkerLeft(score: number) {
+  return Math.max(0, Math.min(100, 50 + score / 2))
 }
 
 function buildBiasText(
