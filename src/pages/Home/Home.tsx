@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import './Home.styles.css'
-import { Button, Stack, Typography } from '@mui/material'
+import { Button, Stack } from '@mui/material'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -9,9 +9,7 @@ const HomeRaw = () => {
 
   return (
     <>
-      <Typography variant='h3' component='h1' gutterBottom>
-        CODE-XX-XY
-      </Typography>
+      <h1>CODE-XX-XY</h1>
 
       <Stack
         direction='row'

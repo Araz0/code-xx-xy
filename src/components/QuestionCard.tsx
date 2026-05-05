@@ -59,6 +59,7 @@ const QuestionCardRaw = () => {
         sx={{
           p: 3,
           width: 'min(900px, 92vw)',
+          textAlign: 'center', // Center align all text
           animation: 'questionReveal 420ms cubic-bezier(0.22, 1, 0.36, 1)',
           '@keyframes questionReveal': {
             '0%': {
@@ -72,35 +73,40 @@ const QuestionCardRaw = () => {
           },
         }}
       >
-        <Stack spacing={2.5}>
-          <Typography variant="overline" color="text.secondary">
+        <Stack spacing={4} alignItems='center'>
+          {' '}
+          {/* Center align stack items */}
+          <Typography variant='overline' color='text.secondary'>
             Question {currentIndex + 1} of {totalQuestions}
           </Typography>
-
-          <Typography variant="body1">{currentQuestion.question}</Typography>
-
-          <Box sx={{ px: 1, mt: 2 }}>
+          <Typography variant='h3'>{currentQuestion.question}</Typography>
+          <Typography variant='h1'>{currentGuess}</Typography>
+          <Box
+            sx={{
+              px: 1,
+              mt: 2,
+              width: '100%', // Ensure slider takes full width
+            }}
+          >
             <Slider
               min={0}
               max={100}
               step={1}
               value={currentGuess}
               onChange={handleOnSliderChange}
+              sx={{
+                '& .MuiSlider-thumb': {
+                  color: 'black', // Set the slider knob color to black
+                },
+                '& .MuiSlider-track': {
+                  color: 'transparent', // Remove the track color
+                },
+              }}
             />
           </Box>
-
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography color="text.secondary">
-              Your answer: {currentGuess}
-            </Typography>
-            <Button variant="contained" onClick={handleClickNext}>
-              {isLastQuestion ? 'Finish' : 'Next'}
-            </Button>
-          </Stack>
+          <Button variant='contained' onClick={handleClickNext}>
+            {isLastQuestion ? 'Finish' : 'Next'}
+          </Button>
         </Stack>
       </Paper>
     </Fade>
