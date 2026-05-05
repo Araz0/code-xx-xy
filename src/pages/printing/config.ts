@@ -20,6 +20,6 @@ export const DEFAULT_PRINT_CONFIG: PrintConfig = {
   legendFontSize: 11,
   pointColor: '#000000',
   historicalPointSize: 4,
-  correctPointSize: 12,
-  userPointSize: 18,
+  correctPointSize: 10,
+  userPointSize: 16,
 }
