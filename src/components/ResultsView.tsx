@@ -16,12 +16,15 @@ const ResultsViewRaw = () => {
   const rawQuestions = useStoreValue(quizStore, 'rawQuestions')
   const userAnswers = useStoreValue(quizStore, 'userAnswers')
   const language = useStoreValue(quizStore, 'language')
+  const userName = useStoreValue(quizStore, 'userName')
+  const userAge = useStoreValue(quizStore, 'userAge')
   const totalQuestions = allQuestions.length
   const [historicalResults, setHistoricalResults] = useState<number[][]>([])
   const [historyLoaded, setHistoryLoaded] = useState(false)
   const [visibleRows, setVisibleRows] = useState(0)
   const [revealedRows, setRevealedRows] = useState(0)
   const [startRevealReal, setStartRevealReal] = useState(false)
+  const [showControlsShadow, setShowControlsShadow] = useState(false)
 
   const handleRestartClick = useCallback(() => {
     quizStore.set('startQuiz')
@@ -135,13 +138,34 @@ const ResultsViewRaw = () => {
     return () => window.clearInterval(intervalId)
   }, [startRevealReal, totalQuestions])
 
+  // Handle scroll to show/hide controls shadow
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollElement = document.documentElement
+      const isAtBottom =
+        scrollElement.scrollHeight -
+          scrollElement.scrollTop -
+          window.innerHeight <
+        10
+      setShowControlsShadow(!isAtBottom && window.scrollY > 0)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
     <>
+      {/* <LanguageToggle /> */}
       <style>{dynamicPrintStyle}</style>
       <Paper
         elevation={0}
         className="results-view"
-        sx={{ p: { xs: 2.25, sm: 3.5 }, width: 'min(980px, 94vw)' }}
+        sx={{
+          p: { xs: 2.25, sm: 3.5 },
+          width: 'min(980px, 94vw)',
+          pb: { xs: 14, sm: 16 },
+        }}
       >
         <Stack spacing={3.25}>
           <Typography variant="h4" component="h2" textAlign="center">
@@ -161,24 +185,37 @@ const ResultsViewRaw = () => {
               />
             ))}
           </Stack>
-          <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-            flexWrap="wrap"
-          >
-            <Button variant="outlined" onClick={handleRestartClick}>
-              Restart
-            </Button>
-            <Button variant="outlined" onClick={handleHomeClick}>
-              Home
-            </Button>
-            <Button variant="outlined" onClick={handlePrintClick}>
-              Print
-            </Button>
-          </Stack>
         </Stack>
       </Paper>
+
+      {/* Sticky Controls */}
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        flexWrap="wrap"
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          p: 2,
+          bgcolor: 'background.paper',
+          zIndex: 900,
+          boxShadow: showControlsShadow ? 3 : 'none',
+          transition: 'box-shadow 0.2s ease-in-out',
+        }}
+      >
+        <Button variant="outlined" onClick={handleRestartClick}>
+          Restart
+        </Button>
+        <Button variant="outlined" onClick={handleHomeClick}>
+          Home
+        </Button>
+        <Button variant="outlined" onClick={handlePrintClick}>
+          Print
+        </Button>
+      </Stack>
 
       <div className="print-results-page print-only">
         <PrintChart
@@ -187,6 +224,8 @@ const ResultsViewRaw = () => {
           headerText={headerText}
           legendText={legendText}
           language={language}
+          userName={userName}
+          userAge={userAge}
         />
       </div>
     </>

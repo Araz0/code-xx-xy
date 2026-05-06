@@ -7,6 +7,8 @@ export interface PrintChartProps {
   headerText: string
   legendText: { correct: string; historical: string; user: string }
   language?: 'en' | 'de'
+  userName?: string
+  userAge?: string
 }
 
 export function PrintChart({
@@ -15,6 +17,8 @@ export function PrintChart({
   headerText,
   legendText,
   language = 'en',
+  userName = '',
+  userAge = '',
 }: PrintChartProps) {
   const summary = printData.biasSummary
   const historicalBiasBySet = printData.historicalBiasBySet ?? []
@@ -30,7 +34,11 @@ export function PrintChart({
       aria-label="Printable chart preview"
     >
       <header className="print-header">
-        <h1>{headerText}</h1>
+        <div className="print-header-content">
+          <div className="print-header-left">{userName}</div>
+          <h1>{headerText}</h1>
+          <div className="print-header-right">{userAge}</div>
+        </div>
       </header>
       {printData.lines.map((lineData) => {
         return (

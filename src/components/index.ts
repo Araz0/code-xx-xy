@@ -1,2 +1,4 @@
 export { QuestionCard } from './QuestionCard'
 export { ResultsView } from './ResultsView'
+export { UserInfoForm } from './UserInfoForm'
+export { LanguageToggle } from './LanguageToggle'

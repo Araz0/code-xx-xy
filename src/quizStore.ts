@@ -15,11 +15,13 @@ export type Question = Omit<RawQuestion, 'title' | 'question'> & {
 }
 
 type QuizState = {
-  status: 'idle' | 'in-progress' | 'completed'
+  status: 'idle' | 'in-progress' | 'user-info' | 'completed'
   language: 'en' | 'de'
   rawQuestions: RawQuestion[]
   currentIndex: number
   userAnswers: number[] // Store answers by index
+  userName: string
+  userAge: string
 }
 
 // --- HELPERS ---
@@ -48,6 +50,8 @@ const initialState: QuizState = {
   rawQuestions: getInitialQuestions(),
   currentIndex: 0,
   userAnswers: [],
+  userName: '',
+  userAge: '',
 }
 
 // --- STORE ---
@@ -59,6 +63,8 @@ export const quizStore = createStore(initialState, {
     partialize: (state) => ({
       status: state.status,
       language: state.language,
+      userName: state.userName,
+      userAge: state.userAge,
       currentIndex: state.currentIndex,
       userAnswers: state.userAnswers,
     }),
@@ -187,5 +193,26 @@ export const quizStore = createStore(initialState, {
      */
     toggleLanguage: () => {
       set('language', (lang) => (lang === 'en' ? 'de' : 'en'))
+    },
+
+    /**
+     * Sets user name.
+     */
+    setUserName: (name: string) => {
+      set('userName', name)
+    },
+
+    /**
+     * Sets user age.
+     */
+    setUserAge: (age: string) => {
+      set('userAge', age)
+    },
+
+    /**
+     * Sets status to 'user-info' to show the user info form.
+     */
+    showUserInfoForm: () => {
+      set('status', 'user-info')
     },
   }))

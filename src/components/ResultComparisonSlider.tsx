@@ -20,87 +20,88 @@ export const ResultComparisonSlider = ({
   const clampedEstimate = Math.max(0, Math.min(100, estimate))
   const clampedActual = Math.max(0, Math.min(100, actual))
 
+  // Circle sizes from config
+  const userCircleSize = 16
+  const correctCircleSize = 10
+
   return (
     <Fade in={visible} timeout={420}>
-      <Stack spacing={1.25}>
-        <Typography variant='subtitle1' color='text.secondary'>
+      <Stack spacing={2}>
+        <Typography variant="subtitle1" color="text.secondary">
           Q{index + 1}: {title}
         </Typography>
 
-        <Typography
-          variant='caption'
-          sx={{ fontWeight: 700, letterSpacing: 0.8 }}
-        >
-          YOUR ESTIMATE
-        </Typography>
-
-        <Box sx={{ position: 'relative', px: 0.75, pt: 1.5 }}>
-          <Box
+        <Box>
+          <Typography
+            variant="caption"
             sx={{
-              height: 12,
-              borderRadius: 999,
-              bgcolor: 'grey.200',
-              position: 'relative',
-              overflow: 'visible',
+              fontWeight: 700,
+              letterSpacing: 0.8,
+              display: 'block',
+              mb: 1,
             }}
           >
-            <Box
-              sx={{
-                width: `${clampedEstimate}%`,
-                height: '100%',
-                borderRadius: 999,
-                bgcolor: 'primary.main',
-              }}
-            />
+            YOUR ESTIMATE
+          </Typography>
 
+          <Box
+            sx={{
+              position: 'relative',
+              width: '100%',
+              height: 40,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {/* Track bar */}
             <Box
               sx={{
                 position: 'absolute',
-                left: `calc(${clampedEstimate}% - 7px)`,
                 top: '50%',
-                width: 14,
-                height: 14,
-                borderRadius: '50%',
-                bgcolor: 'primary.main',
-                border: '2px solid #fff',
+                left: 0,
+                right: 0,
+                height: 4,
+                borderRadius: 999,
+                bgcolor: 'grey.200',
                 transform: 'translateY(-50%)',
-                boxShadow: 1,
-                zIndex: 2,
+                zIndex: 0,
               }}
             />
 
-            {reveal && (
-              <Fade in timeout={280}>
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    left: `calc(${clampedActual}% - 7px)`,
-                    top: '50%',
-                    width: 14,
-                    height: 14,
-                    border: '2px solid',
-                    borderColor: 'secondary.main',
-                    bgcolor: 'background.paper',
-                    transform: 'translateY(-50%) rotate(45deg)',
-                    boxShadow: 2,
-                    zIndex: 4,
-                  }}
-                />
-              </Fade>
-            )}
+            {/* User estimate circle (big, filled black) */}
+            <Box
+              sx={{
+                position: 'absolute',
+                left: `${clampedEstimate}%`,
+                top: '50%',
+                width: userCircleSize,
+                height: userCircleSize,
+                borderRadius: '50%',
+                bgcolor: '#000000',
+                transform: 'translate(-50%, -50%)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                zIndex: 2,
+                flexShrink: 0,
+              }}
+            />
 
+            {/* Correct answer circle (mid-size, outlined) - only show on reveal */}
             {reveal && (
               <Fade in timeout={280}>
                 <Box
                   sx={{
                     position: 'absolute',
-                    left: `calc(${clampedActual}% - 1px)`,
-                    top: -18,
-                    width: 2,
-                    height: 38,
-                    bgcolor: 'secondary.main',
-                    opacity: 0.8,
+                    left: `${clampedActual}%`,
+                    top: '50%',
+                    width: correctCircleSize + 'px',
+                    height: correctCircleSize + 'px',
+                    border: '2px solid',
+                    bgcolor: 'black',
+                    borderRadius: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
                     zIndex: 3,
+                    flexShrink: 0,
                   }}
                 />
               </Fade>
@@ -108,19 +109,16 @@ export const ResultComparisonSlider = ({
           </Box>
 
           <Stack
-            direction='row'
-            justifyContent='space-between'
-            alignItems='center'
-            sx={{ mt: 0.75 }}
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ mt: 1.5 }}
           >
-            <Typography variant='caption'>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               {clampedEstimate.toFixed(1)}%
             </Typography>
             {reveal && (
-              <Typography
-                variant='caption'
-                sx={{ color: 'secondary.main', fontWeight: 700 }}
-              >
+              <Typography variant="caption" sx={{ fontWeight: 700 }}>
                 Real: {clampedActual.toFixed(1)}%
               </Typography>
             )}

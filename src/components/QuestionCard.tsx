@@ -10,35 +10,22 @@ import {
 } from '@mui/material'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../quizStore'
-import { useNavigate } from 'react-router-dom'
-import { useSupabase } from '../hooks/useSupabase'
 
 const QuestionCardRaw = () => {
-  const navigate = useNavigate()
   const currentQuestion = useStoreValue(quizStore, 'currentQuestion')
   const currentIndex = useStoreValue(quizStore, 'currentIndex')
   const totalQuestions = useStoreValue(quizStore, 'totalQuestions')
   const currentGuess = useStoreValue(quizStore, 'currentGuess')
   const isLastQuestion = useStoreValue(quizStore, 'isLastQuestion')
-  const userAnswers = useStoreValue(quizStore, 'userAnswers')
-  const language = useStoreValue(quizStore, 'language')
-  const { submitQuizResults } = useSupabase()
 
   const handleClickNext = useCallback(async () => {
     if (isLastQuestion) {
-      quizStore.set('finishQuiz')
-      const { error } = await submitQuizResults({
-        answers: userAnswers,
-        language,
-      })
-      if (error) {
-        console.error('Failed to submit quiz results', error)
-      }
-      navigate('/results', { state: { autoPrint: true } })
+      // Show user info form instead of finishing immediately
+      quizStore.set('showUserInfoForm')
       return
     }
     quizStore.set('nextQuestion')
-  }, [isLastQuestion, language, navigate, submitQuizResults, userAnswers])
+  }, [isLastQuestion])
 
   const handleOnSliderChange = useCallback(
     (_: Event, value: number | number[]) => {
@@ -73,14 +60,14 @@ const QuestionCardRaw = () => {
           },
         }}
       >
-        <Stack spacing={4} alignItems='center'>
+        <Stack spacing={4} alignItems="center">
           {' '}
           {/* Center align stack items */}
-          <Typography variant='overline' color='text.secondary'>
+          <Typography variant="overline" color="text.secondary">
             Question {currentIndex + 1} of {totalQuestions}
           </Typography>
-          <Typography variant='h3'>{currentQuestion.question}</Typography>
-          <Typography variant='h1'>{currentGuess}</Typography>
+          <Typography variant="h3">{currentQuestion.question}</Typography>
+          <Typography variant="h1">{currentGuess}</Typography>
           <Box
             sx={{
               px: 1,
@@ -104,8 +91,8 @@ const QuestionCardRaw = () => {
               }}
             />
           </Box>
-          <Button variant='contained' onClick={handleClickNext}>
-            {isLastQuestion ? 'Finish' : 'Next'}
+          <Button variant="contained" onClick={handleClickNext}>
+            {isLastQuestion ? 'Next' : 'Next'}
           </Button>
         </Stack>
       </Paper>

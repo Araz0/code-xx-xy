@@ -173,7 +173,7 @@ export function calculateBiasSummary(
 
     points.forEach((point) => {
       const diff = point - line.correctAnswer
-      menBiasSum += getMenSignedDiff(diff, line.targetGender)
+      menBiasSum += getMenSignedDiff(diff, line.targetGender!)
       biasCount += 1
     })
   })

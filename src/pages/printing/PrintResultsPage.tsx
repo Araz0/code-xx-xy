@@ -13,6 +13,8 @@ export function PrintResultsPage() {
   const rawQuestions = useStoreValue(quizStore, 'rawQuestions')
   const userAnswers = useStoreValue(quizStore, 'userAnswers')
   const language = useStoreValue(quizStore, 'language')
+  const userName = useStoreValue(quizStore, 'userName')
+  const userAge = useStoreValue(quizStore, 'userAge')
 
   const state = location.state as { resultsSets?: number[][] } | null
   const resultsSets = useMemo(() => {
@@ -50,29 +52,14 @@ export function PrintResultsPage() {
   return (
     <Stack spacing={2.5} sx={{ py: 3 }} className="print-results-page">
       <style>{dynamicPrintStyle}</style>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        className="print-page-topbar"
-      >
-        <Typography variant="h5" component="h1">
-          Print Results
-        </Typography>
-        <Stack direction="row" spacing={1.5}>
-          <Button variant="text" onClick={() => navigate('/results')}>
-            View Results
-          </Button>
-          <Button variant="text" onClick={() => navigate('/')}>
-            Home
-          </Button>
-        </Stack>
-      </Stack>
       <PrintChart
         printData={printData}
         cssVariables={cssVariables}
         headerText={headerText}
         legendText={legendText}
         language={language}
+        userName={userName}
+        userAge={userAge}
       />
     </Stack>
   )
