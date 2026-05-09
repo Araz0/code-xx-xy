@@ -32,18 +32,6 @@ export const ResultComparisonSlider = ({
         </Typography>
 
         <Box>
-          <Typography
-            variant="caption"
-            sx={{
-              fontWeight: 700,
-              letterSpacing: 0.8,
-              display: 'block',
-              mb: 1,
-            }}
-          >
-            YOUR ESTIMATE
-          </Typography>
-
           <Box
             sx={{
               position: 'relative',
@@ -115,11 +103,11 @@ export const ResultComparisonSlider = ({
             sx={{ mt: 1.5 }}
           >
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              {clampedEstimate.toFixed(1)}%
+              Your Estimate: {clampedEstimate}%
             </Typography>
             {reveal && (
               <Typography variant="caption" sx={{ fontWeight: 700 }}>
-                Real: {clampedActual.toFixed(1)}%
+                Real: {clampedActual}%
               </Typography>
             )}
           </Stack>
