@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { notifyQuizResultsUpdated } from './quizResultsSync'
 
 type SubmitQuizResultInput = {
   answers: number[]
@@ -38,10 +39,16 @@ export function useSupabase() {
         }
       }
 
-      return client.from(SUPABASE_TABLE).insert({
+      const result = await client.from(SUPABASE_TABLE).insert({
         answers,
         language: language ?? null,
       })
+
+      if (!result.error) {
+        notifyQuizResultsUpdated()
+      }
+
+      return result
     },
     [client],
   )
