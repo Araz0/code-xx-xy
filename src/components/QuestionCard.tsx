@@ -16,16 +16,19 @@ const QuestionCardRaw = () => {
   const currentIndex = useStoreValue(quizStore, 'currentIndex')
   const totalQuestions = useStoreValue(quizStore, 'totalQuestions')
   const currentGuess = useStoreValue(quizStore, 'currentGuess')
+  const currentAnswerTouched = useStoreValue(quizStore, 'currentAnswerTouched')
   const isLastQuestion = useStoreValue(quizStore, 'isLastQuestion')
 
   const handleClickNext = useCallback(async () => {
+    if (!currentAnswerTouched) return
+
     if (isLastQuestion) {
       // Show user info form instead of finishing immediately
       quizStore.set('showUserInfoForm')
       return
     }
     quizStore.set('nextQuestion')
-  }, [isLastQuestion])
+  }, [currentAnswerTouched, isLastQuestion])
 
   const handleOnSliderChange = useCallback(
     (_: Event, value: number | number[]) => {
@@ -60,14 +63,14 @@ const QuestionCardRaw = () => {
           },
         }}
       >
-        <Stack spacing={4} alignItems="center">
+        <Stack spacing={4} alignItems='center'>
           {' '}
           {/* Center align stack items */}
-          <Typography variant="overline" color="text.secondary">
+          <Typography variant='overline' color='text.secondary'>
             Question {currentIndex + 1} of {totalQuestions}
           </Typography>
-          <Typography variant="h3">{currentQuestion.question}</Typography>
-          <Typography variant="h1">{currentGuess}</Typography>
+          <Typography variant='h3'>{currentQuestion.question}</Typography>
+          <Typography variant='h1'>{currentGuess}</Typography>
           <Box
             sx={{
               px: 1,
@@ -91,7 +94,11 @@ const QuestionCardRaw = () => {
               }}
             />
           </Box>
-          <Button variant="contained" onClick={handleClickNext}>
+          <Button
+            variant='contained'
+            onClick={handleClickNext}
+            disabled={!currentAnswerTouched}
+          >
             {isLastQuestion ? 'Next' : 'Next'}
           </Button>
         </Stack>

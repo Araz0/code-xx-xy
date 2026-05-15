@@ -8,10 +8,20 @@ import {
 } from './pages'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
+function getRouterBasename() {
+  const pathname = window.location.pathname
+  if (pathname === '/') return '/'
+
+  const lastSlashIndex = pathname.lastIndexOf('/')
+  return lastSlashIndex >= 0 ? pathname.slice(0, lastSlashIndex + 1) : '/'
+}
+
 function App() {
+  const basename = getRouterBasename()
+
   return (
     <div className='page-container'>
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <Routes>
           <Route index path='/' element={<Home />} />
           <Route path='/form' element={<Form />} />

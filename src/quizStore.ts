@@ -20,6 +20,7 @@ type QuizState = {
   rawQuestions: RawQuestion[]
   currentIndex: number
   userAnswers: number[] // Store answers by index
+  userAnswerTouched: boolean[]
   userName: string
   userAge: string
 }
@@ -50,6 +51,7 @@ const initialState: QuizState = {
   rawQuestions: getInitialQuestions(),
   currentIndex: 0,
   userAnswers: [],
+  userAnswerTouched: [],
   userName: '',
   userAge: '',
 }
@@ -112,6 +114,11 @@ export const quizStore = createStore(initialState, {
         return get('userAnswers')[currentIndex] ?? 0 // Default to 0
       },
 
+      currentAnswerTouched: (): boolean => {
+        const currentIndex = get('currentIndex')
+        return get('userAnswerTouched')[currentIndex] ?? false
+      },
+
       /**
        * Returns all questions, translated to the active language.
        */
@@ -146,6 +153,7 @@ export const quizStore = createStore(initialState, {
       // Initialize answers array with default values
       const total = get('rawQuestions').length
       set('userAnswers', Array(total).fill(0)) // Default to 0 for all answers
+      set('userAnswerTouched', Array(total).fill(false))
     },
 
     /**
@@ -157,6 +165,11 @@ export const quizStore = createStore(initialState, {
         const newAnswers = [...answers]
         newAnswers[currentIndex] = answer
         return newAnswers
+      })
+      set('userAnswerTouched', (touchedAnswers) => {
+        const newTouchedAnswers = [...touchedAnswers]
+        newTouchedAnswers[currentIndex] = true
+        return newTouchedAnswers
       })
     },
 
