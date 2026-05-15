@@ -191,7 +191,6 @@
   border-radius: 50%;
   background: var(--point-color);
   transform: translate(-50%, -50%);
-  opacity: 0.6;
   z-index: 1;
 }
 
@@ -281,8 +280,7 @@
     display: none !important;
   }
 
-  /* Hide sticky controls during print */
-  [class*='MuiStack-root'][style*='fixed'] {
+  .results-sticky-controls {
     display: none !important;
   }
 

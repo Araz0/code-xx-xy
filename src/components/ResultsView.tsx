@@ -160,7 +160,7 @@ const ResultsViewRaw = () => {
       <style>{dynamicPrintStyle}</style>
       <Paper
         elevation={0}
-        className="results-view"
+        className='results-view'
         sx={{
           p: { xs: 2.25, sm: 3.5 },
           width: 'min(980px, 94vw)',
@@ -168,7 +168,7 @@ const ResultsViewRaw = () => {
         }}
       >
         <Stack spacing={3.25}>
-          <Typography variant="h4" component="h2" textAlign="center">
+          <Typography variant='h4' component='h2' textAlign='center'>
             Your perception compared to real data
           </Typography>
 
@@ -190,10 +190,11 @@ const ResultsViewRaw = () => {
 
       {/* Sticky Controls */}
       <Stack
-        direction="row"
+        direction='row'
         spacing={2}
-        justifyContent="center"
-        flexWrap="wrap"
+        justifyContent='center'
+        flexWrap='wrap'
+        className='results-sticky-controls'
         sx={{
           position: 'fixed',
           bottom: 0,
@@ -206,18 +207,18 @@ const ResultsViewRaw = () => {
           transition: 'box-shadow 0.2s ease-in-out',
         }}
       >
-        <Button variant="outlined" onClick={handleRestartClick}>
+        <Button variant='outlined' onClick={handleRestartClick}>
           Restart
         </Button>
-        <Button variant="outlined" onClick={handleHomeClick}>
+        <Button variant='outlined' onClick={handleHomeClick}>
           Home
         </Button>
-        <Button variant="outlined" onClick={handlePrintClick}>
+        <Button variant='outlined' onClick={handlePrintClick}>
           Print
         </Button>
       </Stack>
 
-      <div className="print-results-page print-only">
+      <div className='print-results-page print-only'>
         <PrintChart
           printData={printData}
           cssVariables={cssVariables}
