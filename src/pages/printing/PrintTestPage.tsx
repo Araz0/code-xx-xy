@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { DEFAULT_PRINT_CONFIG } from './config'
 import { demoPrintData } from './demoPrintData'
 
@@ -37,6 +38,7 @@ function applyPreviewCssVariables(config: typeof DEFAULT_PRINT_CONFIG) {
 }
 
 export function PrintTestPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const config = DEFAULT_PRINT_CONFIG
   const cssVariables = useMemo(() => applyPreviewCssVariables(config), [config])
@@ -47,19 +49,23 @@ export function PrintTestPage() {
   )
   const [error, setError] = useState('')
 
-  const renderFromJsonText = (nextJsonText: string) => {
-    try {
-      const parsed = JSON.parse(nextJsonText) as unknown
-      const normalized = applyBiasToPrintData(normalizePrintData(parsed))
-      setPreviewData(normalized)
-      setError('')
-      return true
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown JSON error'
-      setError(`Invalid JSON: ${message}`)
-      return false
-    }
-  }
+  const renderFromJsonText = useCallback(
+    (nextJsonText: string) => {
+      try {
+        const parsed = JSON.parse(nextJsonText) as unknown
+        const normalized = applyBiasToPrintData(normalizePrintData(parsed))
+        setPreviewData(normalized)
+        setError('')
+        return true
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Unknown JSON error'
+        setError(t('printTest.invalidJson', { message }))
+        return false
+      }
+    },
+    [t],
+  )
 
   const loadData = (data: PrintData) => {
     const normalized = applyBiasToPrintData(normalizePrintData(data))
@@ -87,54 +93,53 @@ export function PrintTestPage() {
     return () => {
       window.removeEventListener('beforeprint', syncBeforePrint)
     }
-  }, [jsonText])
+  }, [jsonText, renderFromJsonText])
 
   return (
-    <Stack spacing={2.5} sx={{ py: 3 }} className="print-results-page">
+    <Stack spacing={2.5} sx={{ py: 3 }} className='print-results-page'>
       <style>{dynamicPrintStyle}</style>
 
       <Stack
-        direction="row"
-        justifyContent="space-between"
-        className="print-page-topbar"
+        direction='row'
+        justifyContent='space-between'
+        className='print-page-topbar'
       >
-        <Typography variant="h5" component="h1">
-          Print Test
+        <Typography variant='h5' component='h1'>
+          {t('printTest.title')}
         </Typography>
-        <Stack direction="row" spacing={1.5}>
-          <Button variant="text" onClick={() => navigate('/results')}>
-            Results
+        <Stack direction='row' spacing={1.5}>
+          <Button variant='text' onClick={() => navigate('/results')}>
+            {t('printTest.results')}
           </Button>
-          <Button variant="text" onClick={() => navigate('/')}>
-            Home
+          <Button variant='text' onClick={() => navigate('/')}>
+            {t('printTest.home')}
           </Button>
         </Stack>
       </Stack>
 
-      <section className="print-controls">
-        <Typography variant="body2" sx={{ mb: 1 }}>
-          Paste JSON in {`{"lines":[{"points":[0..100]}...]}`} format with 13
-          lines.
+      <section className='print-controls'>
+        <Typography variant='body2' sx={{ mb: 1 }}>
+          {t('printTest.instructions')}
         </Typography>
 
         <textarea
           value={jsonText}
           onChange={(event) => setJsonText(event.target.value)}
-          aria-label="Print JSON input"
+          aria-label='Print JSON input'
         />
 
-        <div className="print-actions">
-          <Button variant="outlined" onClick={() => loadData(demoPrintData)}>
-            Load Demo Data
+        <div className='print-actions'>
+          <Button variant='outlined' onClick={() => loadData(demoPrintData)}>
+            {t('printTest.loadDemoData')}
           </Button>
           <Button
-            variant="outlined"
+            variant='outlined'
             onClick={() => loadData(generateRandomData())}
           >
-            Randomize Data
+            {t('printTest.randomizeData')}
           </Button>
           <Button
-            variant="contained"
+            variant='contained'
             onClick={() => {
               const ok = renderFromJsonText(jsonText)
               if (ok) {
@@ -142,26 +147,25 @@ export function PrintTestPage() {
               }
             }}
           >
-            Print Page
+            {t('printTest.printPage')}
           </Button>
-          <Button variant="text" onClick={() => renderFromJsonText(jsonText)}>
-            Refresh Preview
+          <Button variant='text' onClick={() => renderFromJsonText(jsonText)}>
+            {t('printTest.refreshPreview')}
           </Button>
         </div>
 
-        {error ? <div className="print-error">{error}</div> : null}
+        {error ? <div className='print-error'>{error}</div> : null}
       </section>
 
       <PrintChart
         printData={previewData}
         cssVariables={cssVariables}
-        headerText={config.headerTextEn}
+        headerText={t('presenter.header')}
         legendText={{
-          correct: 'Correct answer',
-          historical: 'Previous answers',
-          user: 'Your answer',
+          correct: t('results.legend.correct'),
+          historical: t('results.legend.historical'),
+          user: t('results.legend.user'),
         }}
-        language="en"
       />
     </Stack>
   )

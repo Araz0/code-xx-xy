@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSupabase } from './useSupabase'
 import { subscribeToQuizResultsUpdates } from './quizResultsSync'
+import i18n from '../i18n.ts'
 
 type QuizResultRow = {
   id: string
@@ -18,7 +19,7 @@ export function usePresenterResults() {
   const refreshResults = useCallback(async () => {
     if (!isReady) {
       setRows([])
-      setError('Supabase is not configured.')
+      setError(i18n.t('errors.supabaseNotConfigured'))
       setLoading(false)
       return
     }
@@ -28,7 +29,9 @@ export function usePresenterResults() {
 
     if (fetchError) {
       setRows([])
-      setError(fetchError.message)
+      setError(
+        i18n.t('errors.fetchResultsFailed', { message: fetchError.message }),
+      )
       setLoading(false)
       return
     }
@@ -39,7 +42,11 @@ export function usePresenterResults() {
   }, [fetchQuizResults, isReady])
 
   useEffect(() => {
-    void refreshResults()
+    const timeoutId = window.setTimeout(() => {
+      void refreshResults()
+    }, 0)
+
+    return () => window.clearTimeout(timeoutId)
   }, [refreshResults])
 
   useEffect(() => {

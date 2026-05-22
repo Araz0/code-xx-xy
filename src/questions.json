@@ -2,107 +2,107 @@
   "questions": [
     {
       "title": {
-        "de": "Vegetarier/Veganer in Deutschland, die Frauen sind",
-        "en": "Vegetarians/vegans in Germany who are women"
+        "de": "Wie viele der 100 Personen in Deutschland, die sich vegetarisch oder vegan ernähren, sind Frauen?",
+        "en": "Out of 100 people in Germany who follow a vegetarian or vegan diet, how many are women?"
       },
       "question": {
         "de": "Wie viele der 100 Personen in Deutschland, die sich vegetarisch oder vegan ernähren, sind Frauen?",
-        "en": "Out of 100 people in Germany who eat a vegetarian or vegan diet, how many are women?"
+        "en": "Out of 100 people in Germany who follow a vegetarian or vegan diet, how many are women?"
       },
       "answer": 61,
       "targetGender": "women"
     },
     {
       "title": {
-        "de": "Verursacher tödlicher Verkehrsunfälle in Österreich, die Männer sind",
-        "en": "Perpetrators of fatal traffic accidents in Austria who are men"
+        "de": "Von wie vielen der 100 vermutlichen Hauptverursacher von Verkehrsunfällen mit Personenschaden in Österreich sind Männer?",
+        "en": "Of the 100 people believed to be primarily responsible for traffic accidents resulting in personal injury in Austria, how many are men?"
       },
       "question": {
-        "de": "Von 100 Verursachern eines tödlichen Verkehrsunfalls in Österreich, wie viele sind Männer?",
-        "en": "Out of 100 people responsible for a fatal traffic accident in Austria, how many are men?"
-      },
-      "answer": 78,
-      "targetGender": "men"
-    },
-    {
-      "title": {
-        "de": "Fachlich angezweifelte Ärzte, die Männer sind",
-        "en": "Doctors whose professional competence is questioned who are men"
-      },
-      "question": {
-        "de": "Von 100 Fällen, in denen die fachliche Kompetenz eines Arztes rechtlich angezweifelt wurde, wie viele entfallen auf Männer?",
-        "en": "Out of 100 cases in which a doctor's professional competence was legally questioned, how many involved men?"
+        "de": "Wie viele der 100 vermutlichen Hauptverursacher von Verkehrsunfällen mit Personenschaden in Österreich sind Männer?",
+        "en": "Of the 100 people believed to be primarily responsible for traffic accidents resulting in personal injury in Austria, how many are men?"
       },
       "answer": 68,
       "targetGender": "men"
     },
     {
       "title": {
-        "de": "Tatverdächtige in Deutschland, die Frauen sind",
-        "en": "Suspects in Germany who are women"
+        "de": "Von 100 Teilzeitbeschäftigten in Österreich, wie viele sind Männer?",
+        "en": "Out of 100 part-time workers in Austria, how many are men?"
       },
       "question": {
-        "de": "Von 100 polizeilich ermittelten Tatverdächtigen in Deutschland, wie viele sind Frauen?",
-        "en": "Out of 100 suspects investigated by the police in Germany, how many are women?"
+        "de": "Von 100 Teilzeitbeschäftigten in Österreich, wie viele sind Männer?",
+        "en": "Out of 100 part-time workers in Austria, how many are men?"
+      },
+      "answer": 23,
+      "targetGender": "men"
+    },
+    {
+      "title": {
+        "de": "Von 100 polizeilich ermittelten Tatverdächtigen von Straftaten in Deutschland, wie viele sind Frauen?",
+        "en": "Out of 100 suspects under police investigation for crimes in Germany, how many are women?"
+      },
+      "question": {
+        "de": "Von 100 polizeilich ermittelten Tatverdächtigen von Straftaten in Deutschland, wie viele sind Frauen?",
+        "en": "Out of 100 suspects under police investigation for crimes in Germany, how many are women?"
       },
       "answer": 25,
       "targetGender": "women"
     },
     {
       "title": {
-        "de": "Hochschulabsolventen 25-34 Jahre, die Männer sind",
-        "en": "University graduates aged 25-34 who are men"
+        "de": "Von 100 Personen im Alter zwischen 25 und 34 Jahren, die einen Hochschulabschluss besitzen, wie viele sind Männer?",
+        "en": "Out of 100 people between the ages of 25 and 34 who have a college degree, how many are men?"
       },
       "question": {
         "de": "Von 100 Personen im Alter zwischen 25 und 34 Jahren, die einen Hochschulabschluss besitzen, wie viele sind Männer?",
-        "en": "Out of 100 people aged 25 to 34 with a university degree, how many are men?"
+        "en": "Out of 100 people between the ages of 25 and 34 who have a college degree, how many are men?"
       },
       "answer": 43,
       "targetGender": "men"
     },
     {
       "title": {
-        "de": "Auf der Straße Durchsuchte, die weiblich sind",
-        "en": "People searched on the street who are female"
+        "de": "Von 100 Personen, die auf der Straße durchsucht werden, wie viele sind weiblich?",
+        "en": "Out of 100 people who are searched on the street, how many are women?"
       },
       "question": {
         "de": "Von 100 Personen, die auf der Straße durchsucht werden, wie viele sind weiblich?",
-        "en": "Out of 100 people searched on the street, how many are female?"
+        "en": "Out of 100 people who are searched on the street, how many are women?"
       },
       "answer": 12,
       "targetGender": "women"
     },
     {
       "title": {
-        "de": "Von Polizei Gewalt Betroffene, die Männer sind",
-        "en": "People affected by police violence who are men"
+        "de": "Wenn die Polizei gegen 100 Personen Gewalt anwendet, wie viele davon sind Männer?",
+        "en": "If the police use force against about 100 people, how many of them are men?"
       },
       "question": {
         "de": "Wenn die Polizei gegen 100 Personen Gewalt anwendet, wie viele davon sind Männer?",
-        "en": "If the police use force against 100 people, how many of them are men?"
+        "en": "If the police use force against about 100 people, how many of them are men?"
       },
       "answer": 79,
       "targetGender": "men"
     },
     {
       "title": {
-        "de": "Tödliche Suizidversuche, die Männer betreffen",
-        "en": "Fatal suicide attempts involving men"
+        "de": "Von 100 tödlichen Suizidversuchen, wie viele davon sind Männer?",
+        "en": "Out of 100 fatal suicide attempts, how many involve men?"
       },
       "question": {
         "de": "Von 100 tödlichen Suizidversuchen, wie viele davon sind Männer?",
-        "en": "Out of 100 fatal suicide attempts, how many are men?"
+        "en": "Out of 100 fatal suicide attempts, how many involve men?"
       },
       "answer": 74,
       "targetGender": "men"
     },
     {
       "title": {
-        "de": "Arbeitslose in Österreich, die Frauen sind",
-        "en": "Unemployed people in Austria who are women"
+        "de": "Von 100 arbeitslosen Personen in Österreich: Wie viele sind weiblich?",
+        "en": "Out of 100 unemployed people in Austria, how many are women?"
       },
       "question": {
-        "de": "Wie viele der 100 arbeitslosen Personen in Österreich sind Frauen?",
+        "de": "Von 100 arbeitslosen Personen in Österreich: Wie viele sind weiblich?",
         "en": "Out of 100 unemployed people in Austria, how many are women?"
       },
       "answer": 43,
@@ -110,50 +110,50 @@
     },
     {
       "title": {
-        "de": "Klagen wegen Behandlungsfehlern, die männliche Ärzte betreffen",
-        "en": "Lawsuits for malpractice involving male doctors"
+        "de": "Von 100 Alleinerziehenden mit minderjährigen Kindern in Deutschland, wie viele sind Männer?",
+        "en": "Out of 100 single parents with minor children in Germany, how many are men?"
       },
       "question": {
-        "de": "Von 100 Fällen, in denen es um Klagen wegen Behandlungsfehlern geht, wie viele betreffen männliche Ärzte?",
-        "en": "Out of 100 cases involving lawsuits for medical malpractice, how many involve male doctors?"
+        "de": "Von 100 Alleinerziehenden mit minderjährigen Kindern in Deutschland, wie viele sind Männer?",
+        "en": "Out of 100 single parents with minor children in Germany, how many are men?"
       },
-      "answer": 64,
+      "answer": 15,
       "targetGender": "men"
     },
     {
       "title": {
-        "de": "Unfallverursacher unter Alkoholeinfluss in Österreich, die Frauen sind",
-        "en": "People causing traffic accidents under the influence in Austria who are women"
+        "de": "Von 100 Personen, die in Österreich unter Alkoholeinfluss einen Verkehrsunfall verursacht haben, wie viele sind Frauen?",
+        "en": "Out of 100 people who have caused a traffic accident while under the influence of alcohol in Austria, how many are women?"
       },
       "question": {
         "de": "Von 100 Personen, die in Österreich unter Alkoholeinfluss einen Verkehrsunfall verursacht haben, wie viele sind Frauen?",
-        "en": "Out of 100 people in Austria who caused a traffic accident under the influence of alcohol, how many are women?"
+        "en": "Out of 100 people who have caused a traffic accident while under the influence of alcohol in Austria, how many are women?"
       },
-      "answer": 13,
+      "answer": 14,
       "targetGender": "women"
     },
     {
       "title": {
-        "de": "Ausbildungsabbrecher, die Männer sind",
-        "en": "Young people who dropped out of training who are men"
+        "de": "Von 100 jungen Menschen, die ihre Ausbildung vorzeitig abgebrochen haben, wie viele sind Männer?",
+        "en": "Out of 100 young people who dropped out of their training program early, how many are men?"
       },
       "question": {
         "de": "Von 100 jungen Menschen, die ihre Ausbildung vorzeitig abgebrochen haben, wie viele sind Männer?",
-        "en": "Out of 100 young people who dropped out of their training early, how many are men?"
+        "en": "Out of 100 young people who dropped out of their training program early, how many are men?"
       },
       "answer": 59,
       "targetGender": "men"
     },
     {
       "title": {
-        "de": "Approbation entzogene/suspendierte Ärzte, die Männer sind",
-        "en": "Doctors whose license was revoked/suspended who are men"
+        "de": "Von 100 Führungskräften in Österreich, wie viele sind Männer?",
+        "en": "Out of 100 executives in Austria, how many are men?"
       },
       "question": {
-        "de": "Von 100 Ärzten, denen die Approbation entzogen oder die suspendiert wurden, wie viele sind Männer?",
-        "en": "Out of 100 doctors whose license was revoked or who were suspended, how many are men?"
+        "de": "Von 100 Führungskräften in Österreich, wie viele sind Männer?",
+        "en": "Out of 100 executives in Austria, how many are men?"
       },
-      "answer": 79,
+      "answer": 64,
       "targetGender": "men"
     }
   ]

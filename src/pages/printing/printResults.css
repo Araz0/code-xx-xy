@@ -201,6 +201,14 @@
   line-height: 1.3;
 }
 
+.print-footer-note {
+  margin: 10px 0 0;
+  font-size: 9px;
+  color: #8a8a8a;
+  line-height: 1.35;
+  font-style: italic;
+}
+
 .line-row {
   display: grid;
   grid-template-columns: var(--line-number-width) 1fr;

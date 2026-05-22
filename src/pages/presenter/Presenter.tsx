@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { CSSProperties } from 'react'
 import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../../quizStore'
 import { PrintChart } from '../../components/PrintChart'
@@ -18,11 +19,11 @@ function applyPresenterCssVariables(cssVariables: CSSProperties) {
 }
 
 export function PresenterPage() {
+  const { t } = useTranslation()
   const rawQuestions = useStoreValue(quizStore, 'rawQuestions')
-  const language = useStoreValue(quizStore, 'language')
   const { resultsSets, loading, error } = usePresenterResults()
 
-  const { config, cssVariables, dynamicPrintStyle, printData } = usePrinting({
+  const { cssVariables, dynamicPrintStyle, printData } = usePrinting({
     questions: rawQuestions,
     resultsSets,
   })
@@ -40,7 +41,7 @@ export function PresenterPage() {
         {error ? (
           <Typography variant='body2'>{error}</Typography>
         ) : loading ? (
-          <Typography variant='body2'>Loading live results...</Typography>
+          <Typography variant='body2'>{t('presenter.loading')}</Typography>
         ) : null}
       </Box>
 
@@ -48,13 +49,12 @@ export function PresenterPage() {
         <PrintChart
           printData={printData}
           cssVariables={presenterCssVariables}
-          headerText={config.headerTextEn || 'Presenter'}
+          headerText={t('presenter.header')}
           legendText={{
-            correct: 'Correct answer',
-            historical: 'Previous answers',
-            user: 'Latest answer',
+            correct: t('results.legend.correct'),
+            historical: t('results.legend.historical'),
+            user: t('results.legend.latest'),
           }}
-          language={language}
         />
       </div>
     </Box>

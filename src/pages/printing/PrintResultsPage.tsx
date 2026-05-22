@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../../quizStore'
 import { usePrinting } from '../../hooks/usePrinting'
@@ -8,11 +9,11 @@ import { PrintChart } from '../../components/PrintChart'
 import './printResults.css'
 
 export function PrintResultsPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const rawQuestions = useStoreValue(quizStore, 'rawQuestions')
   const userAnswers = useStoreValue(quizStore, 'userAnswers')
-  const language = useStoreValue(quizStore, 'language')
   const userName = useStoreValue(quizStore, 'userName')
   const userAge = useStoreValue(quizStore, 'userAge')
 
@@ -24,40 +25,37 @@ export function PrintResultsPage() {
     return [userAnswers]
   }, [state, userAnswers])
 
-  const { config, cssVariables, dynamicPrintStyle, printData } = usePrinting({
+  const { cssVariables, dynamicPrintStyle, printData } = usePrinting({
     questions: rawQuestions,
     resultsSets,
     autoPrint: true,
   })
 
-  const headerText =
-    language === 'de' ? config.headerTextDe : config.headerTextEn
   const legendText = {
-    correct: language === 'de' ? 'Reale Daten' : 'Correct answer',
-    historical: language === 'de' ? 'Vorgaenger-Antworten' : 'Previous answers',
-    user: language === 'de' ? 'Deine Antwort' : 'Your answer',
+    correct: t('results.legend.correct'),
+    historical: t('results.legend.historical'),
+    user: t('results.legend.user'),
   }
 
   if (!rawQuestions.length) {
     return (
-      <Stack spacing={2} alignItems="center" sx={{ py: 3 }}>
-        <Typography variant="h6">No results to print.</Typography>
-        <Button variant="outlined" onClick={() => navigate('/')}>
-          Back Home
+      <Stack spacing={2} alignItems='center' sx={{ py: 3 }}>
+        <Typography variant='h6'>{t('printResults.noResults')}</Typography>
+        <Button variant='outlined' onClick={() => navigate('/')}>
+          {t('printResults.backHome')}
         </Button>
       </Stack>
     )
   }
 
   return (
-    <Stack spacing={2.5} sx={{ py: 3 }} className="print-results-page">
+    <Stack spacing={2.5} sx={{ py: 3 }} className='print-results-page'>
       <style>{dynamicPrintStyle}</style>
       <PrintChart
         printData={printData}
         cssVariables={cssVariables}
-        headerText={headerText}
+        headerText={t('results.printHeader')}
         legendText={legendText}
-        language={language}
         userName={userName}
         userAge={userAge}
       />

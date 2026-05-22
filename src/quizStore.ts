@@ -61,10 +61,9 @@ const initialState: QuizState = {
 export const quizStore = createStore(initialState, {
   name: 'quiz-store',
   persist: {
-    // Only persist user-specific state, not the raw questions
+    // Persist user progress, but always derive the active language from the browser on load.
     partialize: (state) => ({
       status: state.status,
-      language: state.language,
       userName: state.userName,
       userAge: state.userAge,
       currentIndex: state.currentIndex,

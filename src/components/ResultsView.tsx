@@ -1,5 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { Button, Paper, Stack, Typography } from '@mui/material'
+import { Box, Button, Paper, Stack, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../quizStore'
 import { ResultComparisonSlider } from './ResultComparisonSlider'
@@ -10,12 +11,12 @@ import { PrintChart } from './PrintChart'
 import '../pages/printing/printResults.css'
 
 const ResultsViewRaw = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const allQuestions = useStoreValue(quizStore, 'allQuestions')
   const rawQuestions = useStoreValue(quizStore, 'rawQuestions')
   const userAnswers = useStoreValue(quizStore, 'userAnswers')
-  const language = useStoreValue(quizStore, 'language')
   const userName = useStoreValue(quizStore, 'userName')
   const userAge = useStoreValue(quizStore, 'userAge')
   const totalQuestions = allQuestions.length
@@ -56,19 +57,22 @@ const ResultsViewRaw = () => {
     (location.state as { autoPrint?: boolean } | null)?.autoPrint,
   )
 
-  const { config, cssVariables, dynamicPrintStyle, printData, requestPrint } =
+  const { cssVariables, dynamicPrintStyle, printData, requestPrint } =
     usePrinting({
       questions: rawQuestions,
       resultsSets,
       autoPrint: shouldAutoPrint && historyLoaded,
     })
 
-  const headerText =
-    language === 'de' ? config.headerTextDe : config.headerTextEn
   const legendText = {
-    correct: language === 'de' ? 'Reale Daten' : 'Correct answer',
-    historical: language === 'de' ? 'Vorgaenger-Antworten' : 'Previous answers',
-    user: language === 'de' ? 'Deine Antwort' : 'Your answer',
+    correct: t('results.legend.correct'),
+    historical: t('results.legend.historical'),
+    user: t('results.legend.user'),
+  }
+
+  const circleLegendText = {
+    medium: t('printChart.circleLegend.medium'),
+    big: t('printChart.circleLegend.big'),
   }
 
   const handlePrintClick = useCallback(() => {
@@ -169,8 +173,50 @@ const ResultsViewRaw = () => {
       >
         <Stack spacing={3.25}>
           <Typography variant='h4' component='h2' textAlign='center'>
-            Your perception compared to real data
+            {t('results.title')}
           </Typography>
+
+          <Stack
+            direction='row'
+            spacing={2}
+            flexWrap='wrap'
+            justifyContent='center'
+            alignItems='center'
+            sx={{ mt: -0.5 }}
+          >
+            <Stack direction='row' spacing={1} alignItems='center'>
+              <Box
+                sx={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: '50%',
+                  border: '2px solid',
+                  borderColor: 'text.primary',
+                  bgcolor: 'text.primary',
+                  flexShrink: 0,
+                }}
+              />
+              <Typography variant='caption' color='text.secondary'>
+                {circleLegendText.medium}
+              </Typography>
+            </Stack>
+
+            <Stack direction='row' spacing={1} alignItems='center'>
+              <Box
+                sx={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: '50%',
+                  bgcolor: 'text.primary',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  flexShrink: 0,
+                }}
+              />
+              <Typography variant='caption' color='text.secondary'>
+                {circleLegendText.big}
+              </Typography>
+            </Stack>
+          </Stack>
 
           <Stack spacing={3}>
             {allQuestions.map((question, index) => (
@@ -208,13 +254,13 @@ const ResultsViewRaw = () => {
         }}
       >
         <Button variant='outlined' onClick={handleRestartClick}>
-          Restart
+          {t('results.restart')}
         </Button>
         <Button variant='outlined' onClick={handleHomeClick}>
-          Home
+          {t('results.home')}
         </Button>
         <Button variant='outlined' onClick={handlePrintClick}>
-          Print
+          {t('results.print')}
         </Button>
       </Stack>
 
@@ -222,9 +268,8 @@ const ResultsViewRaw = () => {
         <PrintChart
           printData={printData}
           cssVariables={cssVariables}
-          headerText={headerText}
+          headerText={t('printChart.shortTitle')}
           legendText={legendText}
-          language={language}
           userName={userName}
           userAge={userAge}
         />

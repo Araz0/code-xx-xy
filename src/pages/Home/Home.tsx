@@ -1,15 +1,17 @@
 import { memo } from 'react'
 import './Home.styles.css'
 import { Button, Stack } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 import { useNavigate } from 'react-router-dom'
 
 const HomeRaw = () => {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   return (
     <>
-      <h1>CODE-XX-XY</h1>
+      <h1>{t('home.title')}</h1>
 
       <Stack
         direction='row'
@@ -22,7 +24,7 @@ const HomeRaw = () => {
           color='primary'
           onClick={() => navigate('/form')}
         >
-          Start
+          {t('home.start')}
         </Button>
       </Stack>
     </>

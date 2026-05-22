@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../quizStore'
 import { useNavigate } from 'react-router-dom'
@@ -17,32 +18,11 @@ const UserInfoFormRaw = () => {
   const navigate = useNavigate()
   const language = useStoreValue(quizStore, 'language')
   const userAnswers = useStoreValue(quizStore, 'userAnswers')
+  const { t } = useTranslation()
   const { submitQuizResults } = useSupabase()
 
   const [name, setName] = useState('')
   const [age, setAge] = useState('')
-
-  // Translations
-  const translations = {
-    en: {
-      title: 'Almost there!',
-      nameLabel: 'Name (optional)',
-      ageLabel: 'Age (optional)',
-      finishButton: 'Finish',
-      namePlaceholder: 'Enter your name',
-      agePlaceholder: 'Enter your age',
-    },
-    de: {
-      title: 'Fast geschafft!',
-      nameLabel: 'Name (optional)',
-      ageLabel: 'Alter (optional)',
-      finishButton: 'Fertig',
-      namePlaceholder: 'Geben Sie Ihren Namen ein',
-      agePlaceholder: 'Geben Sie Ihr Alter ein',
-    },
-  }
-
-  const t = translations[language]
 
   const handleClickFinish = useCallback(async () => {
     // Save name and age to store
@@ -84,34 +64,34 @@ const UserInfoFormRaw = () => {
           },
         }}
       >
-        <Stack spacing={4} alignItems="center">
-          <Typography variant="h3">{t.title}</Typography>
+        <Stack spacing={4} alignItems='center'>
+          <Typography variant='h3'>{t('userInfo.title')}</Typography>
 
           <Box sx={{ width: '100%', maxWidth: 400 }}>
             <Stack spacing={3}>
               <TextField
-                label={t.nameLabel}
-                placeholder={t.namePlaceholder}
+                label={t('userInfo.nameLabel')}
+                placeholder={t('userInfo.namePlaceholder')}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 fullWidth
-                variant="outlined"
+                variant='outlined'
               />
               <TextField
-                label={t.ageLabel}
-                placeholder={t.agePlaceholder}
+                label={t('userInfo.ageLabel')}
+                placeholder={t('userInfo.agePlaceholder')}
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
                 fullWidth
-                variant="outlined"
-                type="number"
+                variant='outlined'
+                type='number'
                 inputProps={{ min: '0', max: '150' }}
               />
             </Stack>
           </Box>
 
-          <Button variant="contained" onClick={handleClickFinish}>
-            {t.finishButton}
+          <Button variant='contained' onClick={handleClickFinish}>
+            {t('userInfo.finish')}
           </Button>
         </Stack>
       </Paper>

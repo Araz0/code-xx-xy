@@ -1,10 +1,12 @@
 import { memo, useCallback } from 'react'
 import { Button, Stack } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../quizStore'
 
 const LanguageToggleRaw = () => {
   const language = useStoreValue(quizStore, 'language')
+  const { t } = useTranslation()
 
   const handleToggle = useCallback(() => {
     quizStore.set('toggleLanguage')
@@ -20,7 +22,7 @@ const LanguageToggleRaw = () => {
       }}
     >
       <Button
-        size="small"
+        size='small'
         variant={language === 'en' ? 'contained' : 'outlined'}
         onClick={handleToggle}
         sx={{
@@ -30,7 +32,7 @@ const LanguageToggleRaw = () => {
           minWidth: 60,
         }}
       >
-        {language === 'en' ? 'EN' : 'DE'}
+        {language === 'en' ? t('languageToggle.en') : t('languageToggle.de')}
       </Button>
     </Stack>
   )

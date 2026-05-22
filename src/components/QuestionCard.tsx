@@ -8,10 +8,12 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../quizStore'
 
 const QuestionCardRaw = () => {
+  const { t } = useTranslation()
   const currentQuestion = useStoreValue(quizStore, 'currentQuestion')
   const currentIndex = useStoreValue(quizStore, 'currentIndex')
   const totalQuestions = useStoreValue(quizStore, 'totalQuestions')
@@ -64,10 +66,12 @@ const QuestionCardRaw = () => {
         }}
       >
         <Stack spacing={4} alignItems='center'>
-          {' '}
           {/* Center align stack items */}
           <Typography variant='overline' color='text.secondary'>
-            Question {currentIndex + 1} of {totalQuestions}
+            {t('quiz.progress', {
+              current: currentIndex + 1,
+              total: totalQuestions,
+            })}
           </Typography>
           <Typography variant='h3'>{currentQuestion.question}</Typography>
           <Typography variant='h1'>{currentGuess}</Typography>
@@ -99,7 +103,7 @@ const QuestionCardRaw = () => {
             onClick={handleClickNext}
             disabled={!currentAnswerTouched}
           >
-            {isLastQuestion ? 'Next' : 'Next'}
+            {t('quiz.next')}
           </Button>
         </Stack>
       </Paper>

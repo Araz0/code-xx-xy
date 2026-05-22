@@ -1,4 +1,5 @@
 import { Box, Fade, Stack, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 type ResultComparisonSliderProps = {
   index: number
@@ -17,6 +18,7 @@ export const ResultComparisonSlider = ({
   visible,
   reveal,
 }: ResultComparisonSliderProps) => {
+  const { t } = useTranslation()
   const clampedEstimate = Math.max(0, Math.min(100, estimate))
   const clampedActual = Math.max(0, Math.min(100, actual))
 
@@ -27,8 +29,8 @@ export const ResultComparisonSlider = ({
   return (
     <Fade in={visible} timeout={420}>
       <Stack spacing={2}>
-        <Typography variant="subtitle1" color="text.secondary">
-          Q{index + 1}: {title}
+        <Typography variant='subtitle1' color='text.secondary'>
+          {t('results.comparison.question', { index: index + 1, title })}
         </Typography>
 
         <Box>
@@ -97,17 +99,17 @@ export const ResultComparisonSlider = ({
           </Box>
 
           <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
+            direction='row'
+            justifyContent='space-between'
+            alignItems='center'
             sx={{ mt: 1.5 }}
           >
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              Your Estimate: {clampedEstimate}%
+            <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+              {t('results.comparison.yourEstimate', { value: clampedEstimate })}
             </Typography>
             {reveal && (
-              <Typography variant="caption" sx={{ fontWeight: 700 }}>
-                Real: {clampedActual}%
+              <Typography variant='caption' sx={{ fontWeight: 700 }}>
+                {t('results.comparison.real', { value: clampedActual })}
               </Typography>
             )}
           </Stack>
