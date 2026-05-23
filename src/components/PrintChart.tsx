@@ -93,6 +93,7 @@ export function PrintChart({
           <span>{legendText.user}</span>
         </div>
       </div>
+      <br />
       {summary && biasText ? (
         <div className='bias-summary'>
           <div className='bias-scale' aria-label={t('results.printHeader')}>
@@ -109,6 +110,21 @@ export function PrintChart({
               style={{ left: `${biasMarkerLeft}%` }}
             />
           </div>
+          <div
+            className='bias-direction-legend'
+            aria-label={t('printChart.biasLegend.ariaLabel')}
+          >
+            <span className='bias-direction-legend-left'>
+              {t('printChart.biasLegend.left')}
+            </span>
+            <span className='bias-direction-legend-center'>
+              {t('printChart.biasLegend.center')}
+            </span>
+            <span className='bias-direction-legend-right'>
+              {t('printChart.biasLegend.right')}
+            </span>
+          </div>
+
           <p className='bias-text'>{biasText}</p>
         </div>
       ) : null}

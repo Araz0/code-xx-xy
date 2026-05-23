@@ -58,6 +58,7 @@ const resources = {
         home: 'Home',
         print: 'Print',
         printHeader: 'Your perception compared to real data',
+        printFooterNote: '*in relation to the data',
         disclaimer:
           'The information about name and age is voluntary and is used solely to display and print the result. It is not stored permanently.',
         legend: {
@@ -75,6 +76,12 @@ const resources = {
       printChart: {
         ariaLabel: 'Printable chart preview',
         shortTitle: 'CODE XX/XY',
+        biasLegend: {
+          ariaLabel: 'Bias direction legend',
+          left: 'Bias against women*',
+          center: 'data-close',
+          right: 'Bias against men*',
+        },
         circleLegend: {
           medium: 'Medium circle: Correct answer',
           big: 'Big circle: Your answer',
@@ -309,6 +316,12 @@ const resources = {
       printChart: {
         ariaLabel: 'Druckansicht der Grafik',
         shortTitle: 'CODE XX/XY',
+        biasLegend: {
+          ariaLabel: 'Legende zur Bias-Richtung',
+          left: 'Bias gegen Frauen*',
+          center: 'datennah',
+          right: 'Bias gegen Männer*',
+        },
         circleLegend: {
           medium: 'Mittlerer Kreis: Richtige Antwort',
           big: 'Großer Kreis: Deine Antwort',
