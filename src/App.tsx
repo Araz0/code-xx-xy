@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from './quizStore'
 import i18n from './i18n.ts'
+import { LanguageToggle } from './components/index.ts'
 
 function getRouterBasename() {
   const pathname = window.location.pathname
@@ -67,6 +68,8 @@ function AppShell() {
 
   return (
     <div className='page-container'>
+      <LanguageToggle />
+
       <Routes>
         <Route index path='/' element={<Home />} />
         <Route path='/form' element={<Form />} />

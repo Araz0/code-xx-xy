@@ -4,7 +4,6 @@ import { Button, Stack } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
 import { useNavigate } from 'react-router-dom'
-import { LanguageToggle } from '../../components'
 
 const HomeRaw = () => {
   const navigate = useNavigate()
@@ -12,7 +11,6 @@ const HomeRaw = () => {
 
   return (
     <>
-      <LanguageToggle />
       <h1>{t('home.title')}</h1>
 
       <Stack
