@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
@@ -27,6 +28,18 @@ export function PrintChart({
     ? buildBiasText(t, summary.direction, summary.percent, userName, userAge)
     : null
   const biasMarkerLeft = summary ? getBiasMarkerLeft(summary.score) : 50
+
+  useEffect(() => {
+    if (!summary) return
+
+    console.log('[PrintChart] bias summary', {
+      score: summary.score,
+      percent: summary.percent,
+      direction: summary.direction,
+      markerLeft: biasMarkerLeft,
+      historicalBiasBySet,
+    })
+  }, [biasMarkerLeft, historicalBiasBySet, summary])
 
   return (
     <main
@@ -133,7 +146,7 @@ export function PrintChart({
 }
 
 function getBiasMarkerLeft(score: number) {
-  return Math.max(0, Math.min(100, 50 + score / 2))
+  return Math.max(0, Math.min(100, 50 + score))
 }
 
 function buildBiasText(

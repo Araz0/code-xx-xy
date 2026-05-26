@@ -5,7 +5,7 @@ export type PrintLine = {
   correctAnswer: number
   historicalPoints: number[]
   userPoint: number | null
-  targetGender?: GenderLabel
+  targetGender: GenderLabel
   biasDiff?: number | null
   biasDirection?: GenderLabel | null
 }

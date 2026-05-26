@@ -38,6 +38,7 @@ const LanguageToggleRaw = () => {
   return (
     <Box
       ref={containerRef}
+      className='language-toggle'
       sx={{
         position: 'absolute',
         top: 16,

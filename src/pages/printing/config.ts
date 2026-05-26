@@ -15,7 +15,7 @@ export const DEFAULT_PRINT_CONFIG: PrintConfig = {
   headerTextEn: '',
   headerTextDe: '',
   headerFontSize: 22,
-  lineNumberWidth: 34,
+  lineNumberWidth: 18,
   lineNumberFontSize: 8,
   legendFontSize: 11,
   pointColor: '#000000',

@@ -103,7 +103,7 @@ export function normalizePrintData(data: unknown): PrintData {
       const targetGender =
         line.targetGender === 'men' || line.targetGender === 'women'
           ? line.targetGender
-          : undefined
+          : 'men'
       const biasDiff = Number.isFinite(line.biasDiff)
         ? Number(line.biasDiff)
         : undefined
@@ -140,12 +140,27 @@ export function normalizePrintData(data: unknown): PrintData {
 
 type BiasSummary = NonNullable<PrintData['biasSummary']>
 
-function summarizeBias(menBiasSum: number, biasCount: number) {
+/**
+ * Calculates how much bias favors men (positive) or women (negative)
+ * @param menBiasSum - Sum of signed differences (positive = favors men)
+ * @param biasCount - Number of data points analyzed
+ * @returns Bias summary or undefined if no data
+ */
+function summarizeBias(
+  menBiasSum: number,
+  biasCount: number,
+): BiasSummary | undefined {
   if (biasCount <= 0) return undefined
-  const score = menBiasSum / biasCount
+
+  // Calculate average bias score (range: -100 to 100, but can theoretically exceed)
+  const rawScore = menBiasSum / biasCount
+  // Clamp to meaningful range [-100, 100]
+  const score = Math.max(-100, Math.min(100, rawScore))
   const direction: GenderLabel | null =
     score > 0 ? 'men' : score < 0 ? 'women' : null
-  const percent = Math.round(Math.min(100, Math.abs(score)))
+  // Convert to percentage (0-100) of bias magnitude
+  const percent = Math.round(Math.abs(score))
+
   return {
     direction,
     percent,
@@ -154,8 +169,48 @@ function summarizeBias(menBiasSum: number, biasCount: number) {
   }
 }
 
-function getMenSignedDiff(diff: number, targetGender: GenderLabel) {
+/**
+ * Converts a raw difference into a signed value where:
+ * Positive = bias toward men, Negative = bias toward women
+ *
+ * @param diff - Raw difference (userPoint - correctAnswer)
+ * @param targetGender - Which gender this line is targeting
+ * @returns Signed bias value (positive favors men, negative favors women)
+ *
+ * @example
+ * // If targeting women and diff is +10 (user guessed 10 points higher)
+ * // This actually favors women (since higher score benefits women)
+ * // So bias toward men = -10 (negative = favors women)
+ * getBiasTowardMen(10, 'women') // returns -10
+ */
+function getBiasTowardMen(diff: number, targetGender: GenderLabel): number {
+  // For 'men' target: higher diff directly means bias toward men
+  // For 'women' target: higher diff actually favors women, so invert the sign
   return targetGender === 'men' ? diff : -diff
+}
+
+/**
+ * Determines which gender is favored by a bias
+ *
+ * @param diff - Raw difference (userPoint - correctAnswer)
+ * @param targetGender - Which gender this line is targeting
+ * @returns The gender favored by the bias, or null if no bias
+ *
+ * @example
+ * getBiasDirection(10, 'women') // returns 'women' (higher diff favors women)
+ * getBiasDirection(-5, 'men')   // returns 'women' (lower diff disfavors men)
+ */
+function getBiasDirection(
+  diff: number | null,
+  targetGender?: GenderLabel,
+): GenderLabel | null {
+  if (!targetGender || diff === null || diff === 0) return null
+
+  const biasTowardMen = getBiasTowardMen(diff, targetGender)
+
+  if (biasTowardMen > 0) return 'men'
+  if (biasTowardMen < 0) return 'women'
+  return null
 }
 
 export function calculateBiasSummary(
@@ -167,13 +222,14 @@ export function calculateBiasSummary(
 
   lines.forEach((line) => {
     if (!line.targetGender) return
+
     const points = getPoints(line)
       .map((value) => (Number.isFinite(value) ? Number(value) : null))
       .filter((value): value is number => value !== null)
 
     points.forEach((point) => {
       const diff = point - line.correctAnswer
-      menBiasSum += getMenSignedDiff(diff, line.targetGender!)
+      menBiasSum += getBiasTowardMen(diff, line.targetGender)
       biasCount += 1
     })
   })
@@ -181,19 +237,11 @@ export function calculateBiasSummary(
   return summarizeBias(menBiasSum, biasCount)
 }
 
-function getBiasDirectionFromDiff(
-  diff: number | null,
-  targetGender?: GenderLabel,
-) {
-  if (!targetGender || diff === null || diff === 0) return null
-  return diff > 0 ? targetGender : targetGender === 'men' ? 'women' : 'men'
-}
-
 export function applyBiasToPrintData(data: PrintData): PrintData {
   const lines = data.lines.map((line) => {
     const diff =
       line.userPoint === null ? null : line.userPoint - line.correctAnswer
-    const biasDirection = getBiasDirectionFromDiff(diff, line.targetGender)
+    const biasDirection = getBiasDirection(diff, line.targetGender)
 
     return {
       ...line,
@@ -207,16 +255,20 @@ export function applyBiasToPrintData(data: PrintData): PrintData {
     lines,
     (line) => line.historicalPoints,
   )
+
+  // Calculate bias for each historical data point set
   const historicalSetCount = lines.reduce(
     (maxCount, line) => Math.max(maxCount, line.historicalPoints.length),
     0,
   )
+
   const historicalBiasBySet = Array.from(
     { length: historicalSetCount },
     (_, setIndex) =>
       calculateBiasSummary(lines, (line) => [line.historicalPoints[setIndex]]),
-  ).filter((summary): summary is NonNullable<typeof summary> =>
-    Boolean(summary),
+  ).filter(
+    (summary): summary is NonNullable<typeof summary> =>
+      summary !== undefined && summary.count > 0,
   )
 
   return {
@@ -224,7 +276,7 @@ export function applyBiasToPrintData(data: PrintData): PrintData {
     lines,
     ...(biasSummary ? { biasSummary } : {}),
     ...(historicalBiasSummary ? { historicalBiasSummary } : {}),
-    ...(historicalBiasBySet.length ? { historicalBiasBySet } : {}),
+    ...(historicalBiasBySet.length > 0 ? { historicalBiasBySet } : {}),
   }
 }
 
