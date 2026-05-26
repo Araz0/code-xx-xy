@@ -6,16 +6,16 @@
   --screen-max-width: 1100px;
   --print-page-padding: 14px 10px;
   --row-height: 50px;
-  --row-gap: 4px;
+  --row-gap: 6px;
   --scale-font-size: 10px;
   --print-header-font-size: 22px;
   --line-number-width: 28px;
-  --line-number-font-size: 12px;
+  --line-number-font-size: 8px;
   --legend-font-size: 11px;
   --point-color: #111111;
   --historical-point-size: 2px;
   --correct-point-size: 6px;
-  --user-point-size: 10px;
+  --user-point-size: 8px;
 }
 
 * {
@@ -80,6 +80,7 @@
 }
 
 .print-header {
+  padding-inline: 16px;
   font-size: var(--print-header-font-size);
   font-weight: 700;
   margin: 0 0 12px;
@@ -114,6 +115,7 @@
 }
 
 .print-legend {
+  padding-inline: 16px;
   margin-top: 12px;
   display: flex;
   flex-wrap: wrap;
@@ -151,6 +153,7 @@
 }
 
 .bias-summary {
+  padding-inline: 16px;
   margin-top: 10px;
   display: flex;
   flex-direction: column;
@@ -188,6 +191,8 @@
   display: flex;
   align-items: center;
   width: 100%;
+  margin-bottom: 6px;
+  margin-top: 6px;
 }
 
 .bias-marker-dot {
@@ -220,18 +225,21 @@
 }
 
 .bias-text {
+  max-width: 75%;
   margin: 0;
+  margin-top: 24px;
   font-size: calc(var(--legend-font-size) + 1px);
   color: var(--text);
   line-height: 1.3;
 }
 
 .print-footer-note {
+  padding-inline: 16px;
   margin: 10px 0 0;
   font-size: 9px;
   color: #8a8a8a;
   line-height: 1.35;
-  font-style: italic;
+  /* font-style: italic; */
 }
 
 .line-row {
@@ -328,6 +336,7 @@
   .bias-direction-legend {
     display: grid;
     margin-top: 2px;
+    font-weight: bold;
   }
 
   .print-results-page {

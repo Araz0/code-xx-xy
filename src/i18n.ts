@@ -22,22 +22,22 @@ const resources = {
   en: {
     translation: {
       app: {
-        name: 'CODE-XX/XY',
+        name: 'CODE XX/XY',
       },
       titles: {
-        home: 'CODE-XX/XY',
-        form: 'CODE-XX/XY | Quiz',
-        results: 'CODE-XX/XY | Results',
-        printResults: 'CODE-XX/XY | Print results',
-        printTest: 'CODE-XX/XY | Print test',
-        presenter: 'CODE-XX/XY | Presenter',
+        home: 'CODE XX/XY',
+        form: 'CODE XX/XY | Quiz',
+        results: 'CODE XX/XY | Results',
+        printResults: 'CODE XX/XY | Print results',
+        printTest: 'CODE XX/XY | Print test',
+        presenter: 'CODE XX/XY | Presenter',
       },
       languageToggle: {
         en: 'English',
         de: 'Deutsch',
       },
       home: {
-        title: 'CODE-XX/XY',
+        title: 'CODE XX/XY',
         start: 'Start',
       },
       quiz: {
@@ -263,22 +263,22 @@ const resources = {
   de: {
     translation: {
       app: {
-        name: 'CODE-XX/XY',
+        name: 'CODE XX/XY',
       },
       titles: {
-        home: 'CODE-XX/XY',
-        form: 'CODE-XX/XY | Quiz',
-        results: 'CODE-XX/XY | Ergebnisse',
-        printResults: 'CODE-XX/XY | Druckansicht',
-        printTest: 'CODE-XX/XY | Drucktest',
-        presenter: 'CODE-XX/XY | Präsentation',
+        home: 'CODE XX/XY',
+        form: 'CODE XX/XY | Quiz',
+        results: 'CODE XX/XY | Ergebnisse',
+        printResults: 'CODE XX/XY | Druckansicht',
+        printTest: 'CODE XX/XY | Drucktest',
+        presenter: 'CODE XX/XY | Präsentation',
       },
       languageToggle: {
         en: 'Englisch',
         de: 'Deutsch',
       },
       home: {
-        title: 'CODE-XX/XY',
+        title: 'CODE XX/XY',
         start: 'Starten',
       },
       quiz: {

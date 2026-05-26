@@ -36,9 +36,9 @@ export function PrintChart({
     >
       <header className='print-header'>
         <div className='print-header-content'>
-          <div className='print-header-left'>{userName}</div>
-          <h1>{headerText}</h1>
-          <div className='print-header-right'>{userAge}</div>
+          <div className='print-header-left'>{headerText}</div>
+          {/* <h1>{userName}</h1>
+          <div className='print-header-right'>{userAge}</div> */}
         </div>
       </header>
       {printData.lines.map((lineData) => {
@@ -81,6 +81,10 @@ export function PrintChart({
       })}
       <div className='print-legend' role='list'>
         <div className='legend-item' role='listitem'>
+          <span className='legend-dot legend-dot-user' />
+          <span>{legendText.user}</span>
+        </div>
+        <div className='legend-item' role='listitem'>
           <span className='legend-dot legend-dot-correct' />
           <span>{legendText.correct}</span>
         </div>
@@ -88,14 +92,11 @@ export function PrintChart({
           <span className='legend-dot legend-dot-historical' />
           <span>{legendText.historical}</span>
         </div>
-        <div className='legend-item' role='listitem'>
-          <span className='legend-dot legend-dot-user' />
-          <span>{legendText.user}</span>
-        </div>
       </div>
-      <br />
+      {/* <br /> */}
       {summary && biasText ? (
         <div className='bias-summary'>
+          <p className='bias-text'>{biasText}</p>
           <div className='bias-scale' aria-label={t('results.printHeader')}>
             <span className='bias-center-dot' style={{ left: '50%' }} />
             {historicalBiasBySet.map((summaryItem, index) => (
@@ -124,8 +125,6 @@ export function PrintChart({
               {t('printChart.biasLegend.right')}
             </span>
           </div>
-
-          <p className='bias-text'>{biasText}</p>
         </div>
       ) : null}
       <p className='print-footer-note'>{t('results.printFooterNote')}</p>

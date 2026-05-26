@@ -160,7 +160,6 @@ const ResultsViewRaw = () => {
 
   return (
     <>
-      {/* <LanguageToggle /> */}
       <style>{dynamicPrintStyle}</style>
       <Paper
         elevation={0}
