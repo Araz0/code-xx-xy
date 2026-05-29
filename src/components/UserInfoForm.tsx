@@ -93,6 +93,13 @@ const UserInfoFormRaw = () => {
           <Button variant='contained' onClick={handleClickFinish}>
             {t('userInfo.finish')}
           </Button>
+          <Typography
+            variant='body2'
+            color='text.secondary'
+            sx={{ position: 'fixed', bottom: '3rem', paddingInline: '2rem' }}
+          >
+            {t('userInfo.disclaimer')}
+          </Typography>
         </Stack>
       </Paper>
     </Fade>

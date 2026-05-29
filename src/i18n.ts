@@ -51,6 +51,8 @@ const resources = {
         namePlaceholder: 'Enter your name',
         agePlaceholder: 'Enter your age',
         finish: 'Finish',
+        disclaimer:
+          'Providing your name and age is voluntary and will only be used to display or print the results. This information will not be stored permanently.',
       },
       results: {
         title: 'Your perception compared to real data',
@@ -292,6 +294,8 @@ const resources = {
         namePlaceholder: 'Geben Sie Ihren Namen ein',
         agePlaceholder: 'Geben Sie Ihr Alter ein',
         finish: 'Fertig',
+        disclaimer:
+          'Die Angaben zu Name und Alter sind freiwillig und werden ausschließlich zur Darstellung bzw. zum Ausdruck des Ergebnisses verwendet. Eine dauerhafte Speicherung erfolgt nicht.',
       },
       results: {
         title: 'Deine Wahrnehmung im Vergleich zu den tatsächlichen Daten',
