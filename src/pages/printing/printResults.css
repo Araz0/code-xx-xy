@@ -72,6 +72,7 @@
   width: 100%;
   max-width: var(--screen-max-width);
   margin: 0;
+  padding-inline: 1.5rem !important;
   background: var(--page-bg);
   padding: 0;
   display: flex;
@@ -80,7 +81,6 @@
 }
 
 .print-header {
-  /* padding-inline: 16px; */
   font-size: var(--print-header-font-size);
   font-weight: 700;
   margin: 0 0 12px;

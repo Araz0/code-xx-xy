@@ -83,8 +83,8 @@ const resources = {
           right: 'Bias against men*',
         },
         circleLegend: {
-          medium: 'Medium circle: Correct answer',
-          big: 'Big circle: Your answer',
+          medium: 'Correct answer',
+          big: 'Your answer',
         },
         biasDirection: {
           men: 'bias against men',
@@ -303,7 +303,7 @@ const resources = {
         printFooterNote: '*im Verhältnis zur Datenlage',
         legend: {
           correct: 'Richtige Antwort',
-          historical: 'Frühere Antworten',
+          historical: 'Vorherige Antworten',
           user: 'Deine Antwort',
           latest: 'Letzte Antwort',
         },
@@ -323,8 +323,8 @@ const resources = {
           right: 'Bias gegen Männer*',
         },
         circleLegend: {
-          medium: 'Mittlerer Kreis: Richtige Antwort',
-          big: 'Großer Kreis: Deine Antwort',
+          medium: 'Richtige Antwort',
+          big: 'Deine Antwort',
         },
         biasDirection: {
           men: 'Bias gegen Männer',

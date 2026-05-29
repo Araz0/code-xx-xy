@@ -29,12 +29,14 @@ const ResultsViewRaw = () => {
 
   const handleRestartClick = useCallback(() => {
     quizStore.set('startQuiz')
-    navigate('/form')
-  }, [navigate])
-  const handleHomeClick = useCallback(() => {
-    quizStore.set('startQuiz')
+    // navigate('/form')
     navigate('/')
   }, [navigate])
+  // const handleHomeClick = useCallback(() => {
+  //   quizStore.set('startQuiz')
+  //   navigate('/')
+  // }, [navigate])
+
   const { fetchQuizResults } = useSupabase()
 
   const resultsSets = useMemo(() => {
@@ -255,9 +257,9 @@ const ResultsViewRaw = () => {
         <Button variant='outlined' onClick={handleRestartClick}>
           {t('results.restart')}
         </Button>
-        <Button variant='outlined' onClick={handleHomeClick}>
+        {/* <Button variant='outlined' onClick={handleHomeClick}>
           {t('results.home')}
-        </Button>
+        </Button> */}
         <Button variant='outlined' onClick={handlePrintClick}>
           {t('results.print')}
         </Button>
