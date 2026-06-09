@@ -68,7 +68,7 @@ function AppShell() {
 
   return (
     <div className='page-container'>
-      <LanguageToggle />
+      <LanguageToggle hide={location.pathname.startsWith('/presenter')} />
 
       <Routes>
         <Route index path='/' element={<Home />} />

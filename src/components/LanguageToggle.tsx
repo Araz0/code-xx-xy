@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../quizStore'
 
-const LanguageToggleRaw = () => {
+const LanguageToggleRaw = ({ hide }: { hide: boolean }) => {
   const language = useStoreValue(quizStore, 'language')
   const containerRef = useRef<HTMLDivElement>(null)
   const enRef = useRef<HTMLDivElement>(null)
@@ -34,6 +34,8 @@ const LanguageToggleRaw = () => {
     },
     [language],
   )
+
+  if (hide) return null
 
   return (
     <Box
