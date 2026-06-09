@@ -253,7 +253,7 @@ const resources = {
         invalidJson: 'Invalid JSON: {{message}}',
       },
       presenter: {
-        header: '',
+        header: 'CODE XX/XY',
         loading: 'Loading live results...',
       },
       errors: {
@@ -495,7 +495,7 @@ const resources = {
         invalidJson: 'Ungültiges JSON: {{message}}',
       },
       presenter: {
-        header: '',
+        header: 'CODE XX/XY',
         loading: 'Live-Ergebnisse werden geladen...',
       },
       errors: {
