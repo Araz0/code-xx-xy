@@ -4,7 +4,7 @@ import { Box, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useStoreValue } from 'zustand-x'
 import { quizStore } from '../../quizStore'
-import { PrintChart } from '../../components/PrintChart'
+import { PrintChartPresenter } from '../../components'
 import { usePrinting } from '../../hooks/usePrinting'
 import { usePresenterResults } from '../../hooks/usePresenterResults'
 import '../printing/printResults.css'
@@ -46,10 +46,11 @@ export function PresenterPage() {
       </Box>
 
       <div className='presenter-content'>
-        <PrintChart
+        <PrintChartPresenter
           printData={printData}
           cssVariables={presenterCssVariables}
           headerText={t('presenter.header')}
+          subHeaderText={t('presenter.subHeader')}
           legendText={{
             correct: t('results.legend.correct'),
             historical: t('results.legend.historical'),

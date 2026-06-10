@@ -8,26 +8,28 @@ interface PrintChartProps {
   printData: PrintData
   cssVariables: CSSProperties
   headerText: string
+  subHeaderText?: string
   legendText: { correct: string; historical: string; user: string }
-  userName?: string
-  userAge?: string
 }
 
-export function PrintChart({
+export function PrintChartPresenter({
   printData,
   cssVariables,
   headerText,
+  subHeaderText,
   legendText,
-  userName = '',
-  userAge = '',
 }: PrintChartProps) {
   const { t } = useTranslation()
   const summary = printData.biasSummary
   const historicalBiasBySet = printData.historicalBiasBySet ?? []
+  const allParticipantsBias = printData.historicalBiasSummary
   const biasText = summary
-    ? buildBiasText(t, summary.direction, summary.percent, userName, userAge)
+    ? buildBiasText(t, summary.direction, summary.percent)
     : null
-  const biasMarkerLeft = summary ? getBiasMarkerLeft(summary.score) : 50
+
+  const allParticipantsMarkerLeft = allParticipantsBias
+    ? getBiasMarkerLeft(allParticipantsBias.score)
+    : null
 
   useEffect(() => {
     if (!summary) return
@@ -36,10 +38,10 @@ export function PrintChart({
       score: summary.score,
       percent: summary.percent,
       direction: summary.direction,
-      markerLeft: biasMarkerLeft,
       historicalBiasBySet,
+      allParticipantsBias,
     })
-  }, [biasMarkerLeft, historicalBiasBySet, summary])
+  }, [historicalBiasBySet, allParticipantsBias, summary])
 
   return (
     <main
@@ -49,7 +51,15 @@ export function PrintChart({
     >
       <header className='print-header'>
         <div className='print-header-content'>
-          <div className='print-header-left'>{headerText}</div>
+          <div className='print-header-left'>
+            <span className='print-header-maintext'>{headerText}</span>
+            {subHeaderText && (
+              <>
+                <br />
+                <span className='print-header-subtext'>{subHeaderText}</span>
+              </>
+            )}
+          </div>
           {/* <h1>{userName}</h1>
           <div className='print-header-right'>{userAge}</div> */}
         </div>
@@ -92,16 +102,16 @@ export function PrintChart({
           </section>
         )
       })}
-      <div className='print-legend' role='list'>
-        <div className='legend-item' role='listitem'>
+      <div className='print-legend presenter' role='list'>
+        <div className='presenter-legend-item legend-item' role='listitem'>
           <span className='legend-dot legend-dot-user' />
           <span>{legendText.user}</span>
         </div>
-        <div className='legend-item' role='listitem'>
+        <div className='presenter-legend-item legend-item' role='listitem'>
           <span className='legend-dot legend-dot-correct' />
           <span>{legendText.correct}</span>
         </div>
-        <div className='legend-item' role='listitem'>
+        <div className='presenter-legend-item legend-item' role='listitem'>
           <span className='legend-dot legend-dot-historical' />
           <span>{legendText.historical}</span>
         </div>
@@ -109,7 +119,7 @@ export function PrintChart({
       {/* <br /> */}
       {summary && biasText ? (
         <div className='bias-summary'>
-          <p className='bias-text'>{biasText}</p>
+          <p className='bias-text presenter-bias-text'>{biasText}</p>
           <div className='bias-scale' aria-label={t('results.printHeader')}>
             <span className='bias-center-dot' style={{ left: '50%' }} />
             {historicalBiasBySet.map((summaryItem, index) => (
@@ -121,7 +131,7 @@ export function PrintChart({
             ))}
             <span
               className='bias-marker-dot'
-              style={{ left: `${biasMarkerLeft}%` }}
+              style={{ left: `${allParticipantsMarkerLeft}%` }}
             />
           </div>
           <div
@@ -153,25 +163,15 @@ function buildBiasText(
   t: TFunction,
   direction: GenderLabel | null,
   percent: number,
-  userName: string,
-  userAge: string,
 ) {
   const bandKey = getBiasBandKey(percent)
   const biasDirectionKey =
     direction === 'women' ? 'women' : direction === 'men' ? 'men' : 'neutral'
-  const hasIdentity = Boolean(userName.trim() && userAge.trim())
   const baseText = t(`printChart.biasBands.${bandKey}.body`)
-  const prefix = hasIdentity
-    ? t(`printChart.biasBands.${bandKey}.withIdentity`, {
-        name: userName.trim(),
-        age: userAge.trim(),
-        percent,
-        biasDirection: t(`printChart.biasDirection.${biasDirectionKey}`),
-      })
-    : t(`printChart.biasBands.${bandKey}.withoutIdentity`, {
-        percent,
-        biasDirection: t(`printChart.biasDirection.${biasDirectionKey}`),
-      })
+  const prefix = t(`printChart.biasBands.${bandKey}.forPresenter`, {
+    percent,
+    biasDirection: t(`printChart.biasDirection.${biasDirectionKey}`),
+  })
 
   return `${prefix} ${baseText}`
 }
