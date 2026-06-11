@@ -167,7 +167,7 @@ function buildBiasText(
   const bandKey = getBiasBandKey(percent)
   const biasDirectionKey =
     direction === 'women' ? 'women' : direction === 'men' ? 'men' : 'neutral'
-  const baseText = t(`printChart.biasBands.${bandKey}.body`)
+  const baseText = t(`printChart.biasBands.${bandKey}.presenterBody`)
   const prefix = t(`printChart.biasBands.${bandKey}.forPresenter`, {
     percent,
     biasDirection: t(`printChart.biasDirection.${biasDirectionKey}`),
