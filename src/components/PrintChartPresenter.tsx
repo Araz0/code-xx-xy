@@ -135,7 +135,7 @@ export function PrintChartPresenter({
             />
           </div>
           <div
-            className='bias-direction-legend'
+            className='presenter-bias-direction-legend'
             aria-label={t('printChart.biasLegend.ariaLabel')}
           >
             <span className='bias-direction-legend-left'>

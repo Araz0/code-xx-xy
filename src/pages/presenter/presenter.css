@@ -36,7 +36,20 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.82);
 }
-
+.presenter-bias-direction-legend {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  font-size: calc(var(--legend-font-size) + 1px);
+  color: var(--text);
+  line-height: 1.2;
+  gap: 12px;
+}
+.presenter-bias-direction-legend span {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
 .print-header-subtext {
   text-transform: uppercase;
 }
